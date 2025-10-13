@@ -1,0 +1,208 @@
+:root {
+  --bg: #051007;        /* deep dark green background */
+  --panel: #0c1a0f;     /* card background */
+  --green: #c5f6c7;     /* text green */
+  --accent: #6fdd8c;     /* bright green */
+  --muted: #88a68c;     /* faded green */
+  --input-bg: #0a1f0d;  /* dark green for inputs/search */
+  --input-text: #c5f6c7; /* light green text for inputs */
+  --radius: 12px;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--green);
+}
+
+/* ===== NAVBAR ===== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #0a1a0a;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: var(--muted);
+  font-weight: 500;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.nav-links a:hover {
+  background: rgba(111, 221, 140, 0.1); /* subtle green hover */
+  color: var(--accent);
+}
+
+/* ===== CARDS ===== */
+.container {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(111, 221, 140, 0.2);
+}
+
+.card h2, .card h3 {
+  margin: 0 0 10px 0;
+  color: var(--accent);
+}
+
+.card p, .card li {
+  color: var(--green);
+  font-size: 0.95rem;
+}
+
+/* ===== ICONS ===== */
+.card .icon {
+  font-size: 22px;
+  margin-right: 8px;
+  color: var(--accent);
+}
+
+/* ===== INPUTS & SEARCH ===== */
+input, textarea, select {
+  background: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid rgba(111, 221, 140, 0.3);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--muted);
+}
+
+/* ===== BUTTONS ===== */
+button {
+  background: var(--accent);
+  color: #051007;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #9ef7a5;
+}
+
+/* ===== CHATBOT ===== */
+.chat-container {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-bubble {
+  padding: 10px 14px;
+  border-radius: 18px;
+  max-width: 80%;
+  line-height: 1.4;
+  font-size: 0.95rem;
+  word-wrap: break-word;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.chat-bubble.ai-bubble {
+  background: #113322;
+  color: var(--green);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bubble.user-bubble {
+  background: var(--accent);
+  color: #051007;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}  
+
+/* ===== FLOATING CHAT BUTTON ===== */
+#chat-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--accent);
+  color: #051007;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  z-index: 50;
+}
+
+#chat-toggle:hover {
+  background: #9ef7a5;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: 20px;
+  text-align: center;
+  color: var(--muted);
+  margin-top: 30px;
+}
+
+/* ===== IMAGES IN SPECIFIED SECTIONS ===== */
+#tools .grid img,
+#pests .grid img,
+#learn .grid img,
+#community .grid img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
