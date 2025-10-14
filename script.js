@@ -37,18 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ---------- Sherwon AI Voice ---------- */
+  let cachedVoices = [];
   function sherwonSpeak(text, gender = "neutral") {
+    if (!speechSynthesis) return;
     const utter = new SpeechSynthesisUtterance(text);
-    const voices = speechSynthesis.getVoices();
-    let chosenVoice;
+    if (!cachedVoices.length) cachedVoices = speechSynthesis.getVoices();
+    let chosenVoice = cachedVoices[0];
 
-    if (gender === "male") {
-      chosenVoice = voices.find(v => v.name.toLowerCase().includes("male")) || voices[0];
-    } else if (gender === "female") {
-      chosenVoice = voices.find(v => v.name.toLowerCase().includes("female")) || voices[0];
-    } else {
-      chosenVoice = voices[0];
-    }
+    if (gender === "male") chosenVoice = cachedVoices.find(v => v.name.toLowerCase().includes("male")) || cachedVoices[0];
+    else if (gender === "female") chosenVoice = cachedVoices.find(v => v.name.toLowerCase().includes("female")) || cachedVoices[0];
 
     utter.voice = chosenVoice;
     utter.rate = 1;
@@ -120,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  /* ---------- Calendar ---------- */
   function renderCalendar() {
     const now = new Date();
     const month = now.getMonth();
@@ -127,30 +125,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const tasks = JSON.parse(localStorage.getItem('sg-tasks') || '[]');
-
-    const monthNames = [
-      "January","February","March","April","May","June",
-      "July","August","September","October","November","December"
-    ];
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
     let html = `<h4 style="color:#16a34a; margin-top:10px;">${monthNames[month]} ${year}</h4>`;
     html += `<table style="width:100%; border-collapse:collapse; color:#e2e8f0;">
-      <tr style="color:#16a34a;">
-        <th>Sun</th><th>Mon</th><th>Tue</th>
-        <th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
-      </tr><tr>`;
+              <tr style="color:#16a34a;"><th>Sun</th><th>Mon</th><th>Tue</th>
+              <th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr><tr>`;
 
     let day = 1;
     for (let i = 0; i < 6; i++) {
       for (let j = 0; j < 7; j++) {
-        if (i === 0 && j < firstDay) {
-          html += "<td></td>";
-        } else if (day > daysInMonth) {
-          html += "<td></td>";
-        } else {
+        if (i === 0 && j < firstDay || day > daysInMonth) html += "<td></td>";
+        else {
           const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
           const hasTask = tasks.some(t => t.date === dateStr);
-          html += `<td data-date="${dateStr}" style="padding:6px; text-align:center; border:1px solid #14532d; cursor:pointer; ${hasTask ? 'background:#14532d; color:#22c55e;' : ''}">${day}</td>`;
+          html += `<td data-date="${dateStr}" style="padding:6px; text-align:center; border:1px solid #14532d; cursor:pointer;
+                   ${hasTask ? 'background:#14532d; color:#22c55e;' : ''}">${day}</td>`;
           day++;
         }
       }
@@ -164,16 +154,11 @@ document.addEventListener('DOMContentLoaded', () => {
       td.addEventListener("click", () => {
         const dateStr = td.dataset.date;
         const dayTasks = tasks.filter(t => t.date === dateStr);
-        if (dayTasks.length) {
-          const taskList = dayTasks.map(t => t.text).join(', ');
-          const message = `You have ${dayTasks.length} task${dayTasks.length > 1 ? 's' : ''} for ${dateStr}: ${taskList}`;
-          alert(message);
-          sherwonSpeak(message, "male");
-        } else {
-          const message = `No tasks for ${dateStr}`;
-          alert(message);
-          sherwonSpeak(message, "neutral");
-        }
+        const message = dayTasks.length
+          ? `You have ${dayTasks.length} task${dayTasks.length > 1 ? 's' : ''} for ${dateStr}: ${dayTasks.map(t=>t.text).join(', ')}`
+          : `No tasks for ${dateStr}`;
+        alert(message);
+        sherwonSpeak(message, dayTasks.length ? "male" : "neutral");
       });
     });
   }
@@ -198,78 +183,212 @@ document.addEventListener('DOMContentLoaded', () => {
     const baseMessage = `≈ ${perRow} plants per row (about ${leftover} cm left over).`;
 
     let funnyReply = "";
-    if (perRow === 0) funnyReply = "Whoa! That’s too narrow for any plant!";
-    else if (perRow < 3) funnyReply = "Nice and roomy — your plants can stretch!";
-    else if (perRow < 6) funnyReply = "Perfect balance — a happy veggie community!";
-    else if (perRow < 10) funnyReply = "That’s a strong planting zone!";
-    else funnyReply = "Whoa! That’s a whole plant party!";
+    if (perRow === 0) funnyReply = "Whoa! That’s too narrow for any plant — even a micro spinach would say ‘nope!’";
+    else if (perRow < 3) funnyReply = "Nice and roomy — your plants can stretch their roots like yoga masters!";
+    else if (perRow < 6) funnyReply = "Perfect balance — not too crowded, not too lonely. A happy veggie community!";
+    else if (perRow < 10) funnyReply = "That’s a strong planting zone! Your veggies might start a union!";
+    else funnyReply = "Whoa! That’s a whole plant party! Even the worms will need a VIP pass!";
 
     out.innerHTML = `<strong>${baseMessage}</strong><br>${funnyReply}`;
     sherwonSpeak(`${baseMessage} ${funnyReply}`, "funny");
   });
 
-  /* ---------- Chatbot & AI ---------- */
-  async function aiReply(q) {
-    const t = q.toLowerCase().trim();
-    const knowledge = {
-      "soil": "🌍 Soil is the top layer of the earth that supports plant life.",
-      "farming": "🚜 Farming is the process of growing crops and raising animals for food, materials, or income.",
-      "pests": "🐛 Pests are insects or animals that harm crops.",
-      "fertilizer": "🌿 Fertilizers help plants grow, organic or chemical.",
-      "irrigation": "💧 Irrigation is watering crops using drip, sprinkler, or channels.",
-      "crop rotation": "🔄 Plant different crops in the same soil each season."
+  /* ---------- Watering Guide ---------- */
+  (() => {
+    const waterBtn = document.getElementById('water-btn');
+    const waterFreq = document.getElementById('water-frequency');
+    const waterOut = document.getElementById('water-schedule');
+    if (!waterBtn || !waterFreq || !waterOut) return;
+
+    const getUser = () => localStorage.getItem('sherwonUserName') || 'friend';
+    const speakText = (text, rate=1, pitch=0.9) => { 
+      if (!speechSynthesis) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = rate;
+      utter.pitch = pitch;
+      utter.volume = 1;
+      utter.voice = speechSynthesis.getVoices()[0];
+      speechSynthesis.cancel();
+      setTimeout(()=>speechSynthesis.speak(utter), 300);
     };
 
-    for (const key in knowledge) {
-      if (t.includes(key)) return knowledge[key];
-    }
+    waterBtn.addEventListener('click', () => {
+      const freq = Number(waterFreq.value);
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const start = new Date();
+      let schedule = [];
+      for (let i=0;i<7;i++){ const d=new Date(start); d.setDate(start.getDate()+i); if(freq>0 && i%freq===0) schedule.push(days[d.getDay()]); }
 
-    if (/^[0-9+\-*/().\s]+$/.test(q)) {
-      try {
-        const val = eval(q);
-        if (isFinite(val)) return `Answer: ${val}`;
-      } catch (e) {}
-    }
+      waterOut.textContent = schedule.length ? '💧 Water on: '+schedule.join(', ') : 'Please select a valid watering frequency.';
 
-    if (t.includes("water")) return "💧 Water plants early in the morning or evening.";
-    if (t.includes("pest")) return "🐞 Use natural pest control.";
-    if (t.includes("plant")) return "🌱 Start with easy crops like spinach, lettuce, or tomatoes.";
+      const username = getUser();
+      const now = new Date();
+      const hour = now.getHours();
+      const minute = now.getMinutes().toString().padStart(2,'0');
+      const ampm = hour>=12?'PM':'AM';
+      const timeNow = `${hour%12||12}:${minute} ${ampm}`;
 
-    return "Sorry, I don't know that yet. Try asking about soil, pests, or watering!";
+      let message = `Hey ${username}! It's ${timeNow}. `;
+      if(schedule.length>0) message += `You should water every ${freq} day${freq>1?'s':''}. This week: ${schedule.join(', ')}. `;
+      else message += `Oops, ${username}, you forgot to choose your watering frequency! `;
+
+      const funnyLines = [
+        "Don't let your spinach faint — it's screaming for water!",
+        "Your plants are giving you the side-eye... better grab that watering can!",
+        "C'mon gardener, time to hydrate your green babies before they gossip about you!",
+        "Your spinach just tweeted: ‘Bro, we’re dry out here!’ 😂"
+      ];
+
+      message += funnyLines[Math.floor(Math.random()*funnyLines.length)];
+      speakText(message,1,1);
+    });
+  })();
+
+  /* ---------- Weather (via backend) ---------- */
+  const weatherBtn = document.getElementById('get-weather');
+  const weatherInput = document.getElementById('weather-city');
+  const weatherResult = document.getElementById('weather-result');
+  let userNameGlobal = window.userName || "Farmer";
+
+  function getGardenAdvice(weatherDesc){
+    weatherDesc = weatherDesc.toLowerCase();
+    if(weatherDesc.includes("rain")) return "Looks like rain today! No need to water your plants, enjoy the shower!";
+    if(weatherDesc.includes("cloud")) return "Cloudy day! Maybe water your garden a little if the soil feels dry.";
+    if(weatherDesc.includes("sun")||weatherDesc.includes("clear")) return "It's sunny! Time to water your spinach and dance with the sun!";
+    if(weatherDesc.includes("storm")||weatherDesc.includes("thunder")) return "Stormy day! Stay safe and let nature water your plants.";
+    return "Check your garden, "+userNameGlobal+"! The weather is tricky today, use your gardening instincts!";
   }
 
-  async function addChatBubble(text, type = 'ai') {
-    const container = document.getElementById('chat-container');
-    if (!container) return;
-    const div = document.createElement('div');
-    div.className = `chat-bubble ${type}-bubble`;
-    div.textContent = text;
+  async function fetchWeather(city){
+    try{
+      const resp = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
+      if(!resp.ok) throw new Error('City not found');
+      return await resp.json();
+    }catch(e){console.error(e); return null;}
+  }
+
+  async function showWeather(city){
+    const data = await fetchWeather(city);
+    if(!data){ weatherResult.textContent="Sorry, couldn't find that town."; sherwonSpeak("Oops "+userNameGlobal+", I couldn't find "+city,"male"); return; }
+    const temp = data.main.temp;
+    const desc = data.weather[0].description;
+    const humidity = data.main.humidity;
+    const wind = data.wind.speed;
+    weatherResult.innerHTML = `<p>Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, wind speed ${wind} m/s.</p>
+                               <p><em>${getGardenAdvice(desc)}</em></p>`;
+    sherwonSpeak(`Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, wind speed ${wind} m/s. ${getGardenAdvice(desc)}`, "male");
+  }
+
+  weatherBtn?.addEventListener('click', async ()=>{
+    let city = weatherInput.value.trim();
+    if(!city){
+      const SpeechRecognition = window.SpeechRecognition||window.webkitSpeechRecognition;
+      if(!SpeechRecognition) return sherwonSpeak("Sorry, voice recognition not supported.","male");
+      sherwonSpeak("Hey "+userNameGlobal+", please say your town now.","male");
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-ZA";
+      recognition.interimResults=false;
+      recognition.maxAlternatives=1;
+      recognition.onresult=async e=>{
+        city = e.results[0][0].transcript;
+        weatherInput.value = city;
+        await showWeather(city);
+      };
+      recognition.onerror=()=>sherwonSpeak("Sorry, I didn't catch that, try typing your town.","male");
+      recognition.start();
+    }else await showWeather(city);
+  });
+
+  /* ---------- Chatbot + AI ---------- */
+  async function fetchGoogleResults(query){
+    try{
+      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      if(!res.ok) throw new Error("Search failed");
+      const data = await res.json();
+      return data.snippet || "No results found.";
+    }catch(e){return "Could not fetch info.";}
+  }
+
+  async function aiReply(q){
+    const t = q.toLowerCase().trim();
+    const knowledge = {
+      "soil":"🌍 Soil is the top layer of the earth that supports plant life...",
+      "types of soil":"🪴 Main types of soil are: Sandy, Clay, Loamy, and Silt.",
+      "farming":"🚜 Farming is growing crops and raising animals for food...",
+      "pests":"🐛 Pests are insects or animals that harm crops.",
+      "fertilizer":"🌿 Fertilizers are nutrients added to soil.",
+      "organic farming":"🍀 Organic farming avoids chemical fertilizers or pesticides.",
+      "irrigation":"💧 Irrigation is watering crops using drip, sprinklers, etc.",
+      "crop rotation":"🔄 Crop rotation means planting different crops each season.",
+    };
+    for(const key in knowledge) if(t.includes(key)) return knowledge[key];
+    if(/^[0-9+\-*/().\s]+$/.test(q)) try{return `Answer: ${eval(q)}`}catch(e){}
+    if(t.includes("water")) return "💧 Water plants early in the morning or evening — about 2–3 times per week.";
+    if(t.includes("pest")) return "🐞 Use neem oil, garlic spray, or marigolds to naturally control pests.";
+    if(t.includes("what to plant")||t.includes("what can i plant")) return "🌱 Start with easy crops like spinach, lettuce, or tomatoes.";
+    return await fetchGoogleResults(q);
+  }
+
+  async function addChatBubble(text,type='ai'){
+    const container=document.getElementById('chat-container');
+    if(!container) return;
+    const div=document.createElement('div');
+    div.className=`chat-bubble ${type}-bubble`;
+    div.textContent=text;
     container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-
-    if (type === 'ai') {
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = 'en-US';
-      window.speechSynthesis.speak(utter);
-    }
+    container.scrollTop=container.scrollHeight;
+    if(type==='ai') speechSynthesis?.speak(new SpeechSynthesisUtterance(text));
   }
 
-  const chatInput = document.getElementById('ai-search');
-  const chatSend = document.getElementById('ai-send');
-  chatSend?.addEventListener('click', async () => {
-    const q = chatInput.value.trim();
-    if (!q) return addChatBubble("Please type a question!", "ai");
-    await addChatBubble(q, "user");
-    chatInput.value = '';
-    const reply = await aiReply(q);
-    await addChatBubble(reply, "ai");
+  const chatInput=document.getElementById('ai-search');
+  const chatSend=document.getElementById('ai-send');
+
+  chatSend?.addEventListener('click',async ()=>{
+    const q=chatInput.value.trim();
+    if(!q) return addChatBubble("Please type a question!","ai");
+    await addChatBubble(q,"user");
+    chatInput.value='';
+    const reply=await aiReply(q);
+    await addChatBubble(reply,"ai");
   });
 
-  chatInput?.addEventListener('keydown', async e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      chatSend.click();
-    }
+  chatInput?.addEventListener('keydown', async e=>{
+    if(e.key==='Enter'){e.preventDefault(); chatSend.click();}
   });
+
+  /* ---------- Voice input ---------- */
+  const micBtn=document.getElementById('mic-btn');
+  if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
+    const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+    let sherwonActive=false;
+
+    const chatRecognition=new SpeechRecognition();
+    chatRecognition.continuous=false;
+    chatRecognition.lang='en-US';
+    chatRecognition.interimResults=false;
+    chatRecognition.onresult=async e=>{
+      const text=e.results[0][0].transcript;
+      await addChatBubble(text,"user");
+      const reply=await aiReply(text);
+      await addChatBubble(reply,"ai");
+    };
+
+    const sherwonRecognition=new SpeechRecognition();
+    sherwonRecognition.continuous=false;
+    sherwonRecognition.lang='en-US';
+    sherwonRecognition.interimResults=false;
+    sherwonRecognition.onresult=async e=>{
+      const transcript=e.results[0][0].transcript.trim().toLowerCase();
+      if(!transcript.includes("sherwon")) return sherwonSpeak("Please start your command by saying Sherwon.");
+      const command=transcript.replace("sherwon","").trim();
+      // future Sherwon commands here
+    };
+
+    micBtn.addEventListener('click',()=>{
+      if(sherwonActive) sherwonRecognition.start();
+      else chatRecognition.start();
+    });
+
+  } else micBtn?.classList.add('disabled');
 
 });
