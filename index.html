@@ -56,10 +56,170 @@
         height: 200px;
       }
     }
+
+    /* Navbar */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #064d03;
+      padding: 10px 20px;
+    }
+    .topbar .logo {
+      display: flex;
+      align-items: center;
+      color: #a5d6a7;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .topbar .logo #ai-avatar {
+      cursor: pointer;
+      margin-left: 8px;
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 15px;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-links a {
+      color: #a5d6a7;
+      text-decoration: none;
+    }
+    .signin-btn {
+      background: linear-gradient(135deg, #1b5e20, #4caf50);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: bold;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #0b3d00;
+      padding: 25px;
+      border-radius: 12px;
+      width: 340px;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 0C4.477 0 0 4.477 0 10C0 15.523 4.477 20 10 20C15.523 20 20 15.523 20 10C20 4.477 15.523 0 10 0ZM10 18C5.589 18 2 14.411 2 10C2 5.589 5.589 2 10 2C14.411 2 18 5.589 18 10C18 14.411 14.411 18 10 18Z' fill='%23264d00'/%3E%3C/svg%3E");
+      background-size: 40px 40px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .modal h2 {
+      color: #a5d6a7;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .modal form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .modal form input {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background-color: #145214;
+      color: #c8e6c9;
+      font-size: 14px;
+    }
+    .modal form input::placeholder {
+      color: #b2dfdb;
+    }
+    .modal form #name {
+      display: none;
+    }
+    .modal form button {
+      background: #4caf50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .modal form button:hover {
+      background: #66bb6a;
+    }
+    .modal p {
+      color: #c8e6c9;
+      font-size: 12px;
+      text-align: center;
+      margin-top: 15px;
+    }
+    .modal p button {
+      background: none;
+      border: none;
+      color: #a5d6a7;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    /* 🌿 Leaf background */
+    #farming-ai {
+      background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='2' fill='%234caf50'/%3E%3C/svg%3E");
+      background-size: 40px 40px;
+      background-repeat: repeat;
+    }
+    #farming-ai button:hover {
+      opacity: 0.9;
+      transform: scale(1.02);
+      transition: all 0.2s ease;
+    }
+
+    /* Category Highlight Colors */
+    .category-question { border-left: 5px solid #22c55e; background:#102515; }
+    .category-answer { border-left: 5px solid #4ade80; background:#132c18; }
+    .category-discussion { border-left: 5px solid #6b7280; background:#1a1f1a; }
+
+    /* Tag Styles */
+    .tag, .filter-tag {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tag-question { background: #14532d; color: #22c55e; }
+    .tag-answer { background: #166534; color: #4ade80; }
+    .tag-discussion { background: #374151; color: #d1d5db; }
+
+    /* Filter Tags */
+    .filter-tag { border: 1px solid transparent; margin-right: 4px; }
+    .filter-tag.active { border: 1px solid #22c55e; background: #14532d; color: #4ade80; }
   </style>
 </head>
 <body>
- <!-- ===== Navbar with AI Avatar and Sign In ===== -->
+  <!-- ===== Navbar with AI Avatar and Sign In ===== -->
 <nav class="topbar">
   <div class="logo">
     🥬 <span>CropLogic</span>
@@ -72,7 +232,10 @@
     <li><a href="#resources">Resources</a></li>
     <li><a href="#learn">Learn</a></li>
     <li><a href="#community">Community</a></li>
-    <li><button id="signin-btn" class="signin-btn">🌿 Sign In</button></li>
+    <li>
+      <button id="signin-btn" class="signin-btn">🌿 Sign In</button>
+      <button id="logout-btn" class="logout-btn" style="display:none;">🚪 Logout</button>
+    </li>
   </ul>
 </nav>
 
@@ -81,14 +244,12 @@
   <div class="modal-content">
     <span id="close-modal" class="close-btn">🛠️</span>
     <h2 id="modal-title">Sign In</h2>
-
     <form id="auth-form">
       <input type="text" id="name" placeholder="Full Name">
       <input type="email" id="email" placeholder="Email" required>
       <input type="password" id="password" placeholder="Password" required>
       <button type="submit" id="submit-btn">Sign In</button>
     </form>
-
     <p>
       <span id="switch-text">Don't have an account? </span>
       <button id="switch-btn">Register</button>
@@ -96,446 +257,17 @@
   </div>
 </div>
 
-<!-- ===== CSS ===== -->
-<style>
-/* Navbar */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #064d03;
-  padding: 10px 20px;
-}
-.topbar .logo {
-  display: flex;
-  align-items: center;
-  color: #a5d6a7;
-  font-weight: bold;
-  font-size: 18px;
-}
-.topbar .logo #ai-avatar {
-  cursor: pointer;
-  margin-left: 8px;
-}
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 15px;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-}
-.nav-links a {
-  color: #a5d6a7;
-  text-decoration: none;
-}
-.signin-btn {
-  background: linear-gradient(135deg, #1b5e20, #4caf50);
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-weight: bold;
-}
+  <!-- AI Popup -->
+  <div id="ai-popup" style="display:none; position:fixed; top:70px; left:50%; transform:translateX(-50%); background:#081225; color:white; padding:12px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.4); z-index:999;">
+    <p id="ai-popup-text"></p>
+    <input type="text" id="ai-name-input" placeholder="Enter your name..." style="margin-top:6px; width:100%; padding:6px; border-radius:6px; border:none;" />
+    <button id="ai-submit-name" style="margin-top:6px; width:100%; padding:6px; border:none; border-radius:6px; background:#16a34a; color:white; cursor:pointer;">Submit</button>
+  </div>
 
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: #0b3d00;
-  padding: 25px;
-  border-radius: 12px;
-  width: 340px;
-  position: relative;
-  box-shadow: 0 0 20px rgba(0,0,0,0.7);
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 0C4.477 0 0 4.477 0 10C0 15.523 4.477 20 10 20C15.523 20 20 15.523 20 10C20 4.477 15.523 0 10 0ZM10 18C5.589 18 2 14.411 2 10C2 5.589 5.589 2 10 2C14.411 2 18 5.589 18 10C18 14.411 14.411 18 10 18Z' fill='%23264d00'/%3E%3C/svg%3E");
-  background-size: 40px 40px;
-}
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  font-size: 18px;
-}
-.modal h2 {
-  color: #a5d6a7;
-  text-align: center;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-.modal form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.modal form input {
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-  background-color: #145214;
-  color: #c8e6c9;
-  font-size: 14px;
-}
-.modal form input::placeholder {
-  color: #b2dfdb;
-}
-.modal form #name {
-  display: none;
-}
-.modal form button {
-  background: #4caf50;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s;
-}
-.modal form button:hover {
-  background: #66bb6a;
-}
-.modal p {
-  color: #c8e6c9;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 15px;
-}
-.modal p button {
-  background: none;
-  border: none;
-  color: #a5d6a7;
-  cursor: pointer;
-  font-weight: bold;
-  text-decoration: underline;
-}
-</style>
-
-<!-- Moved JavaScript for Sign In/Register Modal -->
-<script>
-const signinBtn = document.getElementById('signin-btn');
-const signinModal = document.getElementById('signin-modal');
-const closeModal = document.getElementById('close-modal');
-
-const switchBtn = document.getElementById('switch-btn');
-const switchText = document.getElementById('switch-text');
-const modalTitle = document.getElementById('modal-title');
-const submitBtn = document.getElementById('submit-btn');
-const nameInput = document.getElementById('name');
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-
-let isLogin = true;
-
-// ====================
-// Check localStorage on page load
-// ====================
-window.addEventListener('DOMContentLoaded', () => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (user) {
-    signinBtn.textContent = `🌱 Hi, ${user.name}`;
-    signinBtn.disabled = true; // prevent re-click
-  }
-});
-
-// Open/Close modal
-signinBtn.addEventListener('click', () => {
-  signinModal.style.display = 'flex';
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (user) {
-    modalTitle.textContent = `Welcome back, ${user.name}! 🌿`;
-    nameInput.style.display = 'none';
-    emailInput.value = user.email;
-    passwordInput.value = '';
-    submitBtn.style.display = 'none'; // no login/register needed
-    switchText.textContent = '';
-    switchBtn.style.display = 'none';
-  } else {
-    // reset modal for login/register
-    modalTitle.textContent = "Sign In";
-    submitBtn.textContent = "Sign In";
-    nameInput.style.display = "none";
-    switchText.textContent = "Don't have an account? ";
-    switchBtn.textContent = "Register";
-    submitBtn.style.display = 'block';
-    switchBtn.style.display = 'inline';
-    nameInput.value = '';
-    emailInput.value = '';
-    passwordInput.value = '';
-  }
-});
-
-closeModal.addEventListener('click', () => signinModal.style.display = 'none');
-signinModal.addEventListener('click', e => {
-  if (e.target === signinModal) signinModal.style.display = 'none';
-});
-
-// Switch between Login/Register
-switchBtn.addEventListener('click', () => {
-  isLogin = !isLogin;
-  if (isLogin) {
-    modalTitle.textContent = "Sign In";
-    submitBtn.textContent = "Sign In";
-    nameInput.style.display = "none";
-    switchText.textContent = "Don't have an account? ";
-    switchBtn.textContent = "Register";
-  } else {
-    modalTitle.textContent = "Register";
-    submitBtn.textContent = "Register";
-    nameInput.style.display = "block";
-    switchText.textContent = "Already have an account? ";
-    switchBtn.textContent = "Sign In";
-  }
-});
-
-// Handle form submission
-document.getElementById('auth-form').addEventListener('submit', async e => {
-  e.preventDefault();
-
-  const name = nameInput.value.trim();
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
-
-  if (!email || !password || (!isLogin && !name)) {
-    alert("Please fill in all required fields.");
-    return;
-  }
-
-  try {
-    const url = isLogin ? "/api/login" : "/api/register";
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.error || "Something went wrong");
-      return;
-    }
-
-    alert(data.message);
-
-    // Store user info in localStorage
-    localStorage.setItem("user", JSON.stringify(data.user));
-
-    // Update navbar to greet user
-    signinBtn.textContent = `🌱 Hi, ${data.user.name}`;
-    signinBtn.disabled = true;
-
-    // Close modal & reset form
-    signinModal.style.display = 'none';
-    e.target.reset();
-  } catch (err) {
-    console.error(err);
-    alert("Server error. Check console for details.");
-  }
-});
-</script>
-
-<!-- AI Popup -->
-<div id="ai-popup" style="display:none; position:fixed; top:70px; left:50%; transform:translateX(-50%); background:#081225; color:white; padding:12px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.4); z-index:999;">
-  <p id="ai-popup-text"></p>
-  <input type="text" id="ai-name-input" placeholder="Enter your name..." style="margin-top:6px; width:100%; padding:6px; border-radius:6px; border:none;" />
-  <button id="ai-submit-name" style="margin-top:6px; width:100%; padding:6px; border:none; border-radius:6px; background:#16a34a; color:white; cursor:pointer;">Submit</button>
-</div>
-
-<!-- Listening Indicator -->
-<div id="listening-indicator" style="display:none; position:fixed; bottom:20px; right:20px; background:#16a34a; color:white; padding:10px 16px; border-radius:50px; box-shadow:0 4px 12px rgba(0,0,0,0.4); font-family:sans-serif; font-weight:bold; z-index:1000; transform:scale(0); transition:transform 0.3s ease;">
-  👂 Listening...
-</div>
-
-<script>
-// ===== Sherwon AI Assistant =====
-
-const aiAvatar = document.getElementById('ai-avatar');
-let greeted = false;
-let userName = null;
-let userGender = "neutral";
-let voices = [];
-
-// ===== Load voices properly =====
-speechSynthesis.onvoiceschanged = () => { voices = speechSynthesis.getVoices(); };
-
-// ===== Dialog storage =====
-const dialogQnA = [
-    {q:"how are you", a:["I'm great, thanks! How about you?", "Feeling leafy today!"]},
-    {q:"tell me a joke", a:["Why did the tomato turn red? Because it saw the salad dressing!", "Lettuce be friends forever!"]},
-    {q:"what's up", a:["Just helping farmers grow! You?", "Chillin' in the garden!"]},
-    {q:"i'm bored", a:["Let's explore some features on the page!", "I can tell you gardening tips or quiz you!"]},
-    {q:"morning", a:["Good morning, sunshine!", "Rise and shine, farmer!"]},
-    {q:"afternoon", a:["Good afternoon! Time for some farming fun!", "Hope your day is growing nicely!"]},
-    {q:"evening", a:["Good evening! Ready to relax or learn?", "Evening, let's harvest some knowledge!"]}
-];
-
-// ===== Voice speaking =====
-function speak(text, gender="neutral"){
-    const utter = new SpeechSynthesisUtterance(text);
-    let chosenVoice = voices[0];
-    if (voices.length > 0){
-        if(gender==="male") chosenVoice = voices.find(v=>v.name.toLowerCase().includes("male")) || voices[0];
-        else if(gender==="female") chosenVoice = voices.find(v=>v.name.toLowerCase().includes("female")) || voices[0];
-    }
-    utter.voice = chosenVoice;
-    utter.rate = 1;
-    utter.pitch = 1;
-    speechSynthesis.speak(utter);
-}
-
-// ===== Greeting =====
-function greetUser(){
-    speak("Hello! My name is Sherwon. I'm here to help you find any feature or chat if you're bored!");
-    setTimeout(askUserName, 2000);
-}
-
-// ===== Ask for name =====
-function askUserName(){
-    const name = prompt("What is your name, farmer? 🤖");
-    if(!name || name.trim()==="") userName = "Farmer";
-    else userName = name.trim();
-    userGender = Math.random()>0.5 ? "male":"female";
-
-    const jokes = [
-        `Nice to meet you, ${userName}! Ready to explore?`,
-        `Hey ${userName}, let's grow your knowledge today!`,
-        `Welcome ${userName}! I promise not to leaf you hanging!`
-    ];
-    const joke = jokes[Math.floor(Math.random()*jokes.length)];
-    speak(joke, userGender);
-    showGreetingDiv(joke);
-    greeted = true;
-}
-
-// ===== Temporary greeting div =====
-function showGreetingDiv(text){
-    const div = document.createElement("div");
-    div.id = "ai-greeting";
-    div.style.position="fixed";
-    div.style.top="60px";
-    div.style.right="20px";
-    div.style.background="#0f172a";
-    div.style.color="#00ff99";
-    div.style.padding="10px 15px";
-    div.style.borderRadius="12px";
-    div.style.fontWeight="bold";
-    div.style.zIndex="999";
-    div.textContent = text;
-    document.body.appendChild(div);
-    setTimeout(()=>div.remove(),5000);
-}
-
-// ===== Command handler =====
-function handleCommand(cmd){
-    cmd = cmd.toLowerCase();
-
-    // Check dialog Q&A
-    for(const item of dialogQnA){
-        if(cmd.includes(item.q)){
-            const response = item.a[Math.floor(Math.random()*item.a.length)];
-            speak(`${userName}, ${response}`, userGender);
-            return;
-        }
-    }
-
-    // Section navigation
-    const sections = {
-        "tools":"#tools",
-        "pests":"#pests",
-        "learn":"#learn",
-        "quiz":"#learn",
-        "resources":"#resources",
-        "community":"#community"
-    };
-    for(const key in sections){
-        if(cmd.includes(key) || cmd.includes("go to "+key)){
-            const section = document.querySelector(sections[key]);
-            if(section) section.scrollIntoView({behavior:"smooth"});
-            speak(`Going to ${key}, ${userName}!`, userGender);
-            if(key==="quiz" || cmd.includes("start quiz")) autoStartQuiz();
-            return;
-        }
-    }
-
-    // Tips / Motivation
-    if(cmd.includes("tip")){
-        const tip = document.getElementById("daily-tip")?.textContent || "No tip today!";
-        speak(`${userName}, here's your tip: ${tip}`, userGender);
-        return;
-    }
-    if(cmd.includes("motivation")){
-        const mot = document.getElementById("daily-motivation")?.textContent || "Keep growing strong!";
-        speak(`${userName}, motivation for you: ${mot}`, userGender);
-        return;
-    }
-
-    // Books / coding
-    if(cmd.includes("books") || cmd.includes("algorithm") || cmd.includes("coding")){
-        speak(`Alright ${userName}, let's see some books about algorithms and coding!`, userGender);
-        document.querySelector("#learn")?.scrollIntoView({behavior:"smooth"});
-        return;
-    }
-
-    // Fallback search
-    speak(`Hmm ${userName}, I am not sure. Let's search online!`, userGender);
-    window.open(`https://www.google.com/search?q=${encodeURIComponent(cmd)}`, "_blank");
-}
-
-// ===== Quiz helper =====
-function autoStartQuiz(){
-    const startBtn = document.getElementById("start-quiz");
-    if(startBtn){
-        startBtn.click();
-        speak(`Starting the quiz, ${userName}!`, userGender);
-    }
-}
-
-// ===== Voice recognition =====
-function startVoiceRecognition(){
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if(!SpeechRecognition){
-        speak("Voice recognition not supported in your browser.");
-        return;
-    }
-    const recognition = new SpeechRecognition();
-    recognition.lang="en-US";
-    recognition.interimResults=false;
-    recognition.maxAlternatives=1;
-    aiAvatar.textContent="🎙️";
-
-    recognition.onresult=(event)=>{
-        const cmd = event.results[0][0].transcript;
-        handleCommand(cmd);
-    };
-    recognition.onerror=()=> speak("Sorry, I didn't catch that.");
-    recognition.onend=()=> { aiAvatar.textContent="🧑‍🌾"; };
-
-    recognition.start();
-}
-
-// ===== Avatar click =====
-aiAvatar.addEventListener("click", ()=>{
-    if(!greeted) greetUser();
-    else startVoiceRecognition();
-});
-</script>
+  <!-- Listening Indicator -->
+  <div id="listening-indicator" style="display:none; position:fixed; bottom:20px; right:20px; background:#16a34a; color:white; padding:10px 16px; border-radius:50px; box-shadow:0 4px 12px rgba(0,0,0,0.4); font-family:sans-serif; font-weight:bold; z-index:1000; transform:scale(0); transition:transform 0.3s ease;">
+    👂 Listening...
+  </div>
 
   <!-- HERO -->
   <header id="home" class="hero">
@@ -548,40 +280,37 @@ aiAvatar.addEventListener("click", ()=>{
         <button class="btn" data-scroll="#learn">Quick Lessons</button>
       </div>
 
-<!-- ✅ Rotating Welcome Images -->
-<div class="welcome-slider" id="welcome-slider">
-  <img src="garden1.jpg.jpg" alt="Students gardening" class="active">
-  <img src="garden2.jpg.jpg" alt="Fresh vegetables harvest">
-  <img src="garden3.jpg.jpg" alt="Community garden teamwork">
-</div>
+      <!-- ✅ Rotating Welcome Images -->
+      <div class="welcome-slider" id="welcome-slider">
+        <img src="garden1.jpg.jpg" alt="Students gardening" class="active">
+        <img src="garden2.jpg.jpg" alt="Fresh vegetables harvest">
+        <img src="garden3.jpg.jpg" alt="Community garden teamwork">
+      </div>
 
-    <!-- AI CHATBOT NEXT TO HERO -->
-    <aside class="hero-right card">
-      <div>
-        <strong>AI Assistant</strong>
-        <div id="chat-container" class="chat-container"></div>
-        <div class="chat-input-area">
-          <input type="text" id="ai-search" placeholder="Ask a question..." aria-label="Ask the AI" />
-          <button id="ai-send" title="Ask AI">Send</button>
-          <button id="mic-btn" title="Use voice">🎤</button>
+      <!-- AI CHATBOT NEXT TO HERO -->
+      <aside class="hero-right card">
+        <div>
+          <strong>AI Assistant</strong>
+          <div id="chat-container" class="chat-container"></div>
+          <div class="chat-input-area">
+            <input type="text" id="ai-search" placeholder="Ask a question..." aria-label="Ask the AI" />
+            <button id="ai-send" title="Ask AI">Send</button>
+            <button id="mic-btn" title="Use voice">🎤</button>
+          </div>
         </div>
-      </div>
-
-      <hr/>
-
-      <div>
-        <strong>Today's Tip</strong>
-        <p id="daily-tip" class="tiptext">...</p>
-        <small class="muted">Tip stored locally and rotates daily.</small>
-      </div>
-
-      <hr/>
-
-      <div>
-        <strong>Motivation</strong>
-        <p id="daily-motivation" class="muted">...</p>
-      </div>
-    </aside>
+        <hr/>
+        <div>
+          <strong>Today's Tip</strong>
+          <p id="daily-tip" class="tiptext">...</p>
+          <small class="muted">Tip stored locally and rotates daily.</small>
+        </div>
+        <hr/>
+        <div>
+          <strong>Motivation</strong>
+          <p id="daily-motivation" class="muted">...</p>
+        </div>
+      </aside>
+    </div>
   </header>
 
   <!-- MAIN CONTENT -->
@@ -606,74 +335,71 @@ aiAvatar.addEventListener("click", ()=>{
         </div>
 
         <!-- ====== MAIN CALCULATOR BUTTON ====== -->
-<button id="openCalc" class="btn" style="display:block;margin:60px auto;">Calculate Activities</button>
+        <button id="openCalc" class="btn" style="display:block;margin:60px auto;">Calculate Activities</button>
 
-<!-- ====== POPUP MODAL ====== -->
-<div id="calcModal" class="calc-modal hidden">
-  <div class="calc-content">
-    <button class="close-btn" id="closeCalc">×</button>
-    <h2 class="text-center">🌿 Smart Farming Calculators</h2>
-    <div class="calc-grid">
-      
-      <!-- ====== 1. SEED SPACING ====== -->
-      <div class="calc-section">
-        <h3>Seed Spacing</h3>
-        <div id="display" class="display"></div>
-        <!-- Voice prompt -->
-        <div id="dimensionPrompt" class="dimension-prompt" style="display:none; margin-top:8px; text-align:center;">
-          <p style="color:#0f0;">Are you entering width or length?</p>
-          <button id="chooseWidth" style="margin:4px;">Width</button>
-          <button id="chooseLength" style="margin:4px;">Length</button>
-        </div>
-        <div class="keypad">
-          <button>7</button><button>8</button><button>9</button><button>/</button>
-          <button>4</button><button>5</button><button>6</button><button>*</button>
-          <button>1</button><button>2</button><button>3</button><button>-</button>
-          <button>0</button><button>.</button><button>=</button><button>+</button>
-          <button id="acBtn" style="background:#c00;color:white;">AC</button>
-        </div>
-        <div id="seedResult" class="result"></div>
-      </div>
+        <!-- ====== POPUP MODAL ====== -->
+        <div id="calcModal" class="calc-modal hidden">
+          <div class="calc-content">
+            <button class="close-btn" id="closeCalc">×</button>
+            <h2 class="text-center">🌿 Smart Farming Calculators</h2>
+            <div class="calc-grid">
+              <!-- ====== 1. SEED SPACING ====== -->
+              <div class="calc-section">
+                <h3>Seed Spacing</h3>
+                <div id="display" class="display"></div>
+                <!-- Voice prompt -->
+                <div id="dimensionPrompt" class="dimension-prompt" style="display:none; margin-top:8px; text-align:center;">
+                  <p style="color:#0f0;">Are you entering width or length?</p>
+                  <button id="chooseWidth" style="margin:4px;">Width</button>
+                  <button id="chooseLength" style="margin:4px;">Length</button>
+                </div>
+                <div class="keypad">
+                  <button>7</button><button>8</button><button>9</button><button>/</button>
+                  <button>4</button><button>5</button><button>6</button><button>*</button>
+                  <button>1</button><button>2</button><button>3</button><button>-</button>
+                  <button>0</button><button>.</button><button>=</button><button>+</button>
+                  <button id="acBtn" style="background:#c00;color:white;">AC</button>
+                </div>
+                <div id="seedResult" class="result"></div>
+              </div>
 
-      <!-- ====== 2. FERTILIZER CALCULATOR ====== -->
-      <div class="calc-section">
-        <h3>Fertilizer Amount</h3>
-        <button id="fertCalc">Calculate Fertilizer</button>
-        <div id="fertResult" class="result"></div>
-      </div>
+              <!-- ====== 2. FERTILIZER CALCULATOR ====== -->
+              <div class="calc-section">
+                <h3>Fertilizer Amount</h3>
+                <button id="fertCalc">Calculate Fertilizer</button>
+                <div id="fertResult" class="result"></div>
+              </div>
 
-      <!-- ====== 3. AI ADVISOR ====== -->
-      <div class="calc-section">
-        <h3>Budget & AI Advisor</h3>
-        <input id="budgetInput" type="number" placeholder="Enter your budget (R)" />
-        <button id="aiTalk">💬 Talk to SherwonAI</button>
-        <div id="aiAdvice" class="result"></div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-          <hr/>
-          <h3>Watering Guide</h3>
-          <select id="water-frequency">
-            <option value="3">Water every 3 days</option>
-            <option value="2">Water every 2 days</option>
-            <option value="1">Daily</option>
-          </select>
-          <button id="water-btn" class="btn" style="margin-top:.6rem">Show Schedule</button>
-          <div id="water-schedule" class="muted" style="margin-top:.5rem"></div>
+              <!-- ====== 3. AI ADVISOR ====== -->
+              <div class="calc-section">
+                <h3>Budget & AI Advisor</h3>
+                <input id="budgetInput" type="number" placeholder="Enter your budget (R)" />
+                <button id="aiTalk">💬 Talk to SherwonAI</button>
+                <div id="aiAdvice" class="result"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
-       <!-- Weather Helper -->
-<div>
-  <h3>Weather Helper</h3>
-  <p class="small">Enter your town for garden advice.</p>
-  <input id="weather-city" placeholder="Town e.g. Soshanguve" />
-  <button id="get-weather" class="btn">Get Advice</button>
-  <div id="weather-result" class="muted"></div>
-</div>
+        <hr/>
+        <h3>Watering Guide</h3>
+        <select id="water-frequency">
+          <option value="3">Water every 3 days</option>
+          <option value="2">Water every 2 days</option>
+          <option value="1">Daily</option>
+        </select>
+        <button id="water-btn" class="btn" style="margin-top:.6rem">Show Schedule</button>
+        <div id="water-schedule" class="muted" style="margin-top:.5rem"></div>
+      </div>
 
+      <!-- Weather Helper -->
+      <div>
+        <h3>Weather Helper</h3>
+        <p class="small">Enter your town for garden advice.</p>
+        <input id="weather-city" placeholder="Town e.g. Soshanguve" />
+        <button id="get-weather" class="btn">Get Advice</button>
+        <div id="weather-result" class="muted"></div>
+      </div>
     </section>
   </main>
 
@@ -691,7 +417,6 @@ aiAvatar.addEventListener("click", ()=>{
           <li>Encourage beneficial insects (ladybugs).</li>
         </ul>
       </div>
-
       <div>
         <h3>Simple Rural Sprays (safe)</h3>
         <div class="notice"><strong>Safety:</strong> household remedies; avoid getting spray in eyes; keep away from young children.</div>
@@ -724,7 +449,6 @@ aiAvatar.addEventListener("click", ()=>{
           <li><a href="#" download>Composting Steps (PDF)</a></li>
         </ul>
       </div>
-
       <div>
         <h3>Learn More</h3>
         <ul>
@@ -750,7 +474,6 @@ aiAvatar.addEventListener("click", ()=>{
           <li>Marigold near beds</li>
         </ul>
       </div>
-
       <div>
         <h3>Quick Quiz</h3>
         <button id="start-quiz" class="btn">Start Quiz</button>
@@ -759,8 +482,392 @@ aiAvatar.addEventListener("click", ()=>{
     </div>
   </section>
 
-  <!-- ✅ JS for rotating welcome images with merged background -->
+  <!-- ===== Beginner Farming Recommendation AI ===== -->
+  <section id="farming-ai" class="card" style="background:#1b5e20; padding:20px; border-radius:12px; margin:20px 0;">
+    <h2 style="color:#a5d6a7; text-align:center; margin-bottom:15px;">🌱 Beginner Farming Recommendation AI</h2>
+    <div id="farming-prompt" style="text-align:center; margin-bottom:20px; color:#c8e6c9;">
+      <p id="ai-greeting">Hi! I'm SherwonAI. What type of farming startup do you want to start?</p>
+      <div id="choice-buttons">
+        <button class="farm-choice" data-type="subsistence" style="background:#4caf50; color:white; padding:8px 15px; margin:5px; border:none; border-radius:6px; cursor:pointer;">Subsistence Farming</button>
+        <button class="farm-choice" data-type="commercial" style="background:#2e7d32; color:white; padding:8px 15px; margin:5px; border:none; border-radius:6px; cursor:pointer;">Commercial Farming</button>
+      </div>
+      <button id="reset-choice" style="display:none; background:#81c784; color:#1b5e20; padding:6px 12px; margin-top:10px; border:none; border-radius:6px; cursor:pointer;">🔄 Reset / Change Farming Choice</button>
+    </div>
+    <div id="farming-output" style="color:#c8e6c9; font-size:14px; line-height:1.6;"></div>
+  </section>
+
+  <!-- Community -->
+  <section id="community" class="card" style="background:#0b1f0f; color:#e2e8f0; padding:20px; border-radius:8px;">
+    <h2 class="mb-2 text-lg font-bold text-green-400">Community Q&A</h2>
+    <p class="small mb-4 text-gray-300">
+      Ask questions, share answers, and upvote helpful posts. Posts are stored locally.
+    </p>
+    <div class="grid">
+      <img src="community.pjp.jpg" alt="Community farming or planting together">
+      <!-- Ask a Question -->
+      <textarea id="post-text" placeholder="Ask a question or share your knowledge..." rows="3"
+        class="w-full p-2 border rounded mb-2 bg-[#1a2f1a] text-gray-200 border-green-600"></textarea>
+      <!-- Category Selection -->
+      <div class="row mt-2">
+        <label for="post-category" class="small">Choose a type:</label>
+        <select id="post-category" class="ml-2 border rounded p-1 bg-[#1a2f1a] text-gray-200 border-green-600">
+          <option value="question">❓ Question</option>
+          <option value="answer">💡 Answer</option>
+          <option value="discussion">💬 Discussion</option>
+        </select>
+      </div>
+      <!-- Buttons -->
+      <div class="row mt-3 space-x-2">
+        <button id="post-btn" class="btn" style="background:#16a34a; color:white; padding:6px 12px; border-radius:6px;">Post</button>
+        <button id="clear-posts" class="btn outline" style="border:1px solid #16a34a; color:#16a34a; padding:6px 12px; border-radius:6px;">Clear All</button>
+      </div>
+      <!-- Filter Tags -->
+      <div class="mt-4 space-x-2">
+        <span class="filter-tag active" data-filter="all">All</span>
+        <span class="filter-tag tag-question" data-filter="question">Question</span>
+        <span class="filter-tag tag-answer" data-filter="answer">Answer</span>
+        <span class="filter-tag tag-discussion" data-filter="discussion">Discussion</span>
+      </div>
+      <!-- Posts (Q&A Style) -->
+      <div id="posts" class="mt-6 space-y-4"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>© 2025 Food for Learning — Free student toolkit (no signup)</div>
+  </footer>
+
   <script>
+    // === Elements ===
+const signinBtn = document.getElementById('signin-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const signinModal = document.getElementById('signin-modal');
+const closeModal = document.getElementById('close-modal');
+const switchBtn = document.getElementById('switch-btn');
+const switchText = document.getElementById('switch-text');
+const modalTitle = document.getElementById('modal-title');
+const submitBtn = document.getElementById('submit-btn');
+const nameInput = document.getElementById('name');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+
+let isLogin = true;
+
+// === On Page Load: greet user if logged in ===
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      signinBtn.textContent = `🌱 Hi, ${user.name}`;
+      signinBtn.disabled = true;
+      logoutBtn.style.display = 'inline';
+      console.log("✅ Loaded saved user:", user);
+    } else {
+      console.log("ℹ️ No saved user in localStorage.");
+    }
+  } catch (err) {
+    console.error("❌ Error reading localStorage:", err);
+  }
+});
+
+// === Open Modal ===
+signinBtn.addEventListener('click', () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    signinModal.style.display = 'flex';
+
+    if (user) {
+      modalTitle.textContent = `Welcome back, ${user.name}! 🌿`;
+      nameInput.style.display = 'none';
+      emailInput.value = user.email;
+      passwordInput.value = '';
+      submitBtn.style.display = 'none';
+      switchText.textContent = '';
+      switchBtn.style.display = 'none';
+    } else {
+      modalTitle.textContent = "Sign In";
+      submitBtn.textContent = "Sign In";
+      nameInput.style.display = "none";
+      switchText.textContent = "Don't have an account? ";
+      switchBtn.textContent = "Register";
+      submitBtn.style.display = 'block';
+      switchBtn.style.display = 'inline';
+    }
+  } catch (err) {
+    console.error("❌ Error opening modal:", err);
+  }
+});
+
+closeModal.addEventListener('click', () => signinModal.style.display = 'none');
+signinModal.addEventListener('click', e => {
+  if (e.target === signinModal) signinModal.style.display = 'none';
+});
+
+// === Switch between Sign In / Register ===
+switchBtn.addEventListener('click', () => {
+  try {
+    isLogin = !isLogin;
+    if (isLogin) {
+      modalTitle.textContent = "Sign In";
+      submitBtn.textContent = "Sign In";
+      nameInput.style.display = "none";
+      switchText.textContent = "Don't have an account? ";
+      switchBtn.textContent = "Register";
+    } else {
+      modalTitle.textContent = "Register";
+      submitBtn.textContent = "Register";
+      nameInput.style.display = "block";
+      switchText.textContent = "Already have an account? ";
+      switchBtn.textContent = "Sign In";
+    }
+  } catch (err) {
+    console.error("❌ Error switching mode:", err);
+  }
+});
+
+// === Handle Login/Register ===
+document.getElementById('auth-form').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  if (!email || !password || (!isLogin && !name)) {
+    alert("Please fill in all required fields.");
+    return;
+  }
+
+  const url = isLogin 
+    ? "http://localhost:5000/api/login"
+    : "http://localhost:5000/api/register";
+
+  console.log(`📤 Sending request to: ${url}`);
+  console.log("🧾 Payload:", { name, email, password });
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password })
+    });
+
+    console.log("📥 Raw Response:", response);
+
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonErr) {
+      console.error("❌ Failed to parse JSON:", jsonErr);
+      alert("Server response was not valid JSON.");
+      return;
+    }
+
+    console.log("📦 Response Data:", data);
+
+    if (!response.ok) {
+      console.error("⚠️ Server error:", data.error || "Unknown error");
+      alert(data.error || "Something went wrong");
+      return;
+    }
+
+    alert(data.message);
+
+    localStorage.setItem("user", JSON.stringify(data.user));
+    signinBtn.textContent = `🌱 Hi, ${data.user.name}`;
+    signinBtn.disabled = true;
+    logoutBtn.style.display = 'inline';
+    signinModal.style.display = 'none';
+    e.target.reset();
+
+  } catch (err) {
+    console.error("💥 Fetch or network error:", err);
+    alert("Could not connect to the server. Check console for details.");
+  }
+});
+
+// === Logout Functionality ===
+logoutBtn.addEventListener('click', () => {
+  localStorage.removeItem('user');
+  signinBtn.textContent = "🌿 Sign In";
+  signinBtn.disabled = false;
+  logoutBtn.style.display = 'none';
+  alert("You have been logged out.");
+});
+
+    // ===== Sherwon AI Assistant =====
+    const aiAvatar = document.getElementById('ai-avatar');
+    let greeted = false;
+    let userName = null;
+    let userGender = "neutral";
+    let voices = [];
+
+    // ===== Load voices properly =====
+    speechSynthesis.onvoiceschanged = () => { voices = speechSynthesis.getVoices(); };
+
+    // ===== Dialog storage =====
+    const dialogQnA = [
+      {q:"how are you", a:["I'm great, thanks! How about you?", "Feeling leafy today!"]},
+      {q:"tell me a joke", a:["Why did the tomato turn red? Because it saw the salad dressing!", "Lettuce be friends forever!"]},
+      {q:"what's up", a:["Just helping farmers grow! You?", "Chillin' in the garden!"]},
+      {q:"i'm bored", a:["Let's explore some features on the page!", "I can tell you gardening tips or quiz you!"]},
+      {q:"morning", a:["Good morning, sunshine!", "Rise and shine, farmer!"]},
+      {q:"afternoon", a:["Good afternoon! Time for some farming fun!", "Hope your day is growing nicely!"]},
+      {q:"evening", a:["Good evening! Ready to relax or learn?", "Evening, let's harvest some knowledge!"]}
+    ];
+
+    // ===== Voice speaking =====
+    function speak(text, gender="neutral"){
+      const utter = new SpeechSynthesisUtterance(text);
+      let chosenVoice = voices[0];
+      if (voices.length > 0){
+        if(gender==="male") chosenVoice = voices.find(v=>v.name.toLowerCase().includes("male")) || voices[0];
+        else if(gender==="female") chosenVoice = voices.find(v=>v.name.toLowerCase().includes("female")) || voices[0];
+      }
+      utter.voice = chosenVoice;
+      utter.rate = 1;
+      utter.pitch = 1;
+      speechSynthesis.speak(utter);
+    }
+
+    // ===== Greeting =====
+    function greetUser(){
+      speak("Hello! My name is Sherwon. I'm here to help you find any feature or chat if you're bored!");
+      setTimeout(askUserName, 2000);
+    }
+
+    // ===== Ask for name =====
+    function askUserName(){
+      const name = prompt("What is your name, farmer? 🤖");
+      if(!name || name.trim()==="") userName = "Farmer";
+      else userName = name.trim();
+      userGender = Math.random()>0.5 ? "male":"female";
+
+      const jokes = [
+        `Nice to meet you, ${userName}! Ready to explore?`,
+        `Hey ${userName}, let's grow your knowledge today!`,
+        `Welcome ${userName}! I promise not to leaf you hanging!`
+      ];
+      const joke = jokes[Math.floor(Math.random()*jokes.length)];
+      speak(joke, userGender);
+      showGreetingDiv(joke);
+      greeted = true;
+    }
+
+    // ===== Temporary greeting div =====
+    function showGreetingDiv(text){
+      const div = document.createElement("div");
+      div.id = "ai-greeting";
+      div.style.position="fixed";
+      div.style.top="60px";
+      div.style.right="20px";
+      div.style.background="#0f172a";
+      div.style.color="#00ff99";
+      div.style.padding="10px 15px";
+      div.style.borderRadius="12px";
+      div.style.fontWeight="bold";
+      div.style.zIndex="999";
+      div.textContent = text;
+      document.body.appendChild(div);
+      setTimeout(()=>div.remove(),5000);
+    }
+
+    // ===== Command handler =====
+    function handleCommand(cmd){
+      cmd = cmd.toLowerCase();
+
+      // Check dialog Q&A
+      for(const item of dialogQnA){
+        if(cmd.includes(item.q)){
+          const response = item.a[Math.floor(Math.random()*item.a.length)];
+          speak(`${userName}, ${response}`, userGender);
+          return;
+        }
+      }
+
+      // Section navigation
+      const sections = {
+        "tools":"#tools",
+        "pests":"#pests",
+        "learn":"#learn",
+        "quiz":"#learn",
+        "resources":"#resources",
+        "community":"#community"
+      };
+      for(const key in sections){
+        if(cmd.includes(key) || cmd.includes("go to "+key)){
+          const section = document.querySelector(sections[key]);
+          if(section) section.scrollIntoView({behavior:"smooth"});
+          speak(`Going to ${key}, ${userName}!`, userGender);
+          if(key==="quiz" || cmd.includes("start quiz")) autoStartQuiz();
+          return;
+        }
+      }
+
+      // Tips / Motivation
+      if(cmd.includes("tip")){
+        const tip = document.getElementById("daily-tip")?.textContent || "No tip today!";
+        speak(`${userName}, here's your tip: ${tip}`, userGender);
+        return;
+      }
+      if(cmd.includes("motivation")){
+        const mot = document.getElementById("daily-motivation")?.textContent || "Keep growing strong!";
+        speak(`${userName}, motivation for you: ${mot}`, userGender);
+        return;
+      }
+
+      // Books / coding
+      if(cmd.includes("books") || cmd.includes("algorithm") || cmd.includes("coding")){
+        speak(`Alright ${userName}, let's see some books about algorithms and coding!`, userGender);
+        document.querySelector("#learn")?.scrollIntoView({behavior:"smooth"});
+        return;
+      }
+
+      // Fallback search
+      speak(`Hmm ${userName}, I am not sure. Let's search online!`, userGender);
+      window.open(`https://www.google.com/search?q=${encodeURIComponent(cmd)}`, "_blank");
+    }
+
+    // ===== Quiz helper =====
+    function autoStartQuiz(){
+      const startBtn = document.getElementById("start-quiz");
+      if(startBtn){
+        startBtn.click();
+        speak(`Starting the quiz, ${userName}!`, userGender);
+      }
+    }
+
+    // ===== Voice recognition =====
+    function startVoiceRecognition(){
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if(!SpeechRecognition){
+        speak("Voice recognition not supported in your browser.");
+        return;
+      }
+      const recognition = new SpeechRecognition();
+      recognition.lang="en-US";
+      recognition.interimResults=false;
+      recognition.maxAlternatives=1;
+      aiAvatar.textContent="🎙️";
+
+      recognition.onresult=(event)=>{
+        const cmd = event.results[0][0].transcript;
+        handleCommand(cmd);
+      };
+      recognition.onerror=()=> speak("Sorry, I didn't catch that.");
+      recognition.onend=()=> { aiAvatar.textContent="🧑‍🌾"; };
+
+      recognition.start();
+    }
+
+    // ===== Avatar click =====
+    aiAvatar.addEventListener("click", ()=>{
+      if(!greeted) greetUser();
+      else startVoiceRecognition();
+    });
+
+    // ✅ JS for rotating welcome images with merged background
     const slides = document.querySelectorAll('#welcome-slider img');
     const slider = document.getElementById('welcome-slider');
     let index = 0;
@@ -780,417 +887,310 @@ aiAvatar.addEventListener("click", ()=>{
 
     // Initialize background
     slider.style.backgroundImage = `url(${slides[0].src})`;
-  </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const quizBtn = document.getElementById('start-quiz');
-  const quizArea = document.getElementById('quiz-area');
+    // Quiz Script
+    document.addEventListener('DOMContentLoaded', () => {
+      const quizBtn = document.getElementById('start-quiz');
+      const quizArea = document.getElementById('quiz-area');
 
-  const quizData = {
-    "Water Management": [
-      { q: "How often should you water young seedlings?", a: ["Once a week", "2–3 times per week", "Every day"], correct: 1 },
-      { q: "Watering in the early morning helps reduce:", a: ["Evaporation", "Soil fertility", "Pests"], correct: 0 }
-    ],
-    "Planting by Soil Recognition": [
-      { q: "Which soil is best for root vegetables?", a: ["Clay", "Sandy", "Loamy"], correct: 2 },
-      { q: "Soil testing helps determine:", a: ["pH level", "Sunlight exposure", "Watering schedule"], correct: 0 }
-    ],
-    "Types of Plants": [
-      { q: "Which plant is nitrogen-fixing?", a: ["Tomato", "Beans", "Carrot"], correct: 1 },
-      { q: "Marigolds are useful for:", a: ["Attracting pests", "Repelling pests", "Providing shade"], correct: 1 }
-    ]
-  };
+      const quizData = {
+        "Water Management": [
+          { q: "How often should you water young seedlings?", a: ["Once a week", "2–3 times per week", "Every day"], correct: 1 },
+          { q: "Watering in the early morning helps reduce:", a: ["Evaporation", "Soil fertility", "Pests"], correct: 0 }
+        ],
+        "Planting by Soil Recognition": [
+          { q: "Which soil is best for root vegetables?", a: ["Clay", "Sandy", "Loamy"], correct: 2 },
+          { q: "Soil testing helps determine:", a: ["pH level", "Sunlight exposure", "Watering schedule"], correct: 0 }
+        ],
+        "Types of Plants": [
+          { q: "Which plant is nitrogen-fixing?", a: ["Tomato", "Beans", "Carrot"], correct: 1 },
+          { q: "Marigolds are useful for:", a: ["Attracting pests", "Repelling pests", "Providing shade"], correct: 1 }
+        ]
+      };
 
-  let currentQuiz = [];
-  let currentIndex = 0;
-  let score = 0;
+      let currentQuiz = [];
+      let currentIndex = 0;
+      let score = 0;
 
-  function renderCategorySelection() {
-    quizArea.innerHTML = '<h4>Select a Category:</h4>';
-    Object.keys(quizData).forEach(cat => {
-      const btn = document.createElement('button');
-      btn.textContent = cat;
-      btn.className = 'btn';
-      btn.addEventListener('click', () => startQuiz(cat));
-      quizArea.appendChild(btn);
-    });
-  }
+      function renderCategorySelection() {
+        quizArea.innerHTML = '<h4>Select a Category:</h4>';
+        Object.keys(quizData).forEach(cat => {
+          const btn = document.createElement('button');
+          btn.textContent = cat;
+          btn.className = 'btn';
+          btn.addEventListener('click', () => startQuiz(cat));
+          quizArea.appendChild(btn);
+        });
+      }
 
-  function startQuiz(category) {
-    currentQuiz = quizData[category];
-    currentIndex = 0;
-    score = 0;
-    renderQuestion();
-  }
+      function startQuiz(category) {
+        currentQuiz = quizData[category];
+        currentIndex = 0;
+        score = 0;
+        renderQuestion();
+      }
 
-  function renderQuestion() {
-    if (currentIndex >= currentQuiz.length) {
-      quizArea.innerHTML = `<h4>Quiz Completed!</h4>
-                            <p>Your score: ${score} / ${currentQuiz.length}</p>
-                            <button class="btn" id="restart-quiz">Restart</button>`;
-      document.getElementById('restart-quiz').addEventListener('click', renderCategorySelection);
+      function renderQuestion() {
+        if (currentIndex >= currentQuiz.length) {
+          quizArea.innerHTML = `<h4>Quiz Completed!</h4>
+                                <p>Your score: ${score} / ${currentQuiz.length}</p>
+                                <button class="btn" id="restart-quiz">Restart</button>`;
+          document.getElementById('restart-quiz').addEventListener('click', renderCategorySelection);
 
-      // ✅ Sherwon AI response after quiz
-      if(typeof speak === "function" && typeof userName !== "undefined"){
-        const percent = (score / currentQuiz.length) * 100;
-        if(percent >= 70){
-          speak(`Excellent work, ${userName}! You scored ${score} out of ${currentQuiz.length}. Keep it up!`);
-        } else if(percent >= 50){
-          speak(`Not bad, ${userName}! You scored ${score} out of ${currentQuiz.length}. Keep practicing and you'll improve!`);
-        } else {
-          speak(`Don't worry, ${userName}! You scored ${score} out of ${currentQuiz.length}. Let's try again and you'll get better!`);
+          // ✅ Sherwon AI response after quiz
+          if(typeof speak === "function" && typeof userName !== "undefined"){
+            const percent = (score / currentQuiz.length) * 100;
+            if(percent >= 70){
+              speak(`Excellent work, ${userName}! You scored ${score} out of ${currentQuiz.length}. Keep it up!`);
+            } else if(percent >= 50){
+              speak(`Not bad, ${userName}! You scored ${score} out of ${currentQuiz.length}. Keep practicing and you'll improve!`);
+            } else {
+              speak(`Don't worry, ${userName}! You scored ${score} out of ${currentQuiz.length}. Let's try again and you'll get better!`);
+            }
+          }
+
+          return;
         }
+
+        const qObj = currentQuiz[currentIndex];
+        quizArea.innerHTML = `<p><strong>${qObj.q}</strong></p>`;
+        qObj.a.forEach((ans, i) => {
+          const btn = document.createElement('button');
+          btn.textContent = ans;
+          btn.className = 'btn';
+          btn.addEventListener('click', () => checkAnswer(i));
+          quizArea.appendChild(btn);
+        });
       }
 
-      return;
-    }
+      function checkAnswer(selected) {
+        if (selected === currentQuiz[currentIndex].correct) score++;
+        currentIndex++;
+        renderQuestion();
+      }
 
-    const qObj = currentQuiz[currentIndex];
-    quizArea.innerHTML = `<p><strong>${qObj.q}</strong></p>`;
-    qObj.a.forEach((ans, i) => {
-      const btn = document.createElement('button');
-      btn.textContent = ans;
-      btn.className = 'btn';
-      btn.addEventListener('click', () => checkAnswer(i));
-      quizArea.appendChild(btn);
+      quizBtn.addEventListener('click', renderCategorySelection);
     });
-  }
 
-  function checkAnswer(selected) {
-    if (selected === currentQuiz[currentIndex].correct) score++;
-    currentIndex++;
-    renderQuestion();
-  }
+    // 🌿 Farming Recommendation AI with voice + memory + reset
+    const farmButtons = document.querySelectorAll('.farm-choice');
+    const output = document.getElementById('farming-output');
+    const aiGreeting = document.getElementById('ai-greeting');
+    const resetBtn = document.getElementById('reset-choice');
+    const choiceButtons = document.getElementById('choice-buttons');
 
-  quizBtn.addEventListener('click', renderCategorySelection);
-});
-</script>
-
-
-<!-- ===== Beginner Farming Recommendation AI ===== -->
-<section id="farming-ai" class="card" style="background:#1b5e20; padding:20px; border-radius:12px; margin:20px 0;">
-  <h2 style="color:#a5d6a7; text-align:center; margin-bottom:15px;">🌱 Beginner Farming Recommendation AI</h2>
-  
-  <div id="farming-prompt" style="text-align:center; margin-bottom:20px; color:#c8e6c9;">
-    <p id="ai-greeting">Hi! I'm SherwonAI. What type of farming startup do you want to start?</p>
-    <div id="choice-buttons">
-      <button class="farm-choice" data-type="subsistence" style="background:#4caf50; color:white; padding:8px 15px; margin:5px; border:none; border-radius:6px; cursor:pointer;">Subsistence Farming</button>
-      <button class="farm-choice" data-type="commercial" style="background:#2e7d32; color:white; padding:8px 15px; margin:5px; border:none; border-radius:6px; cursor:pointer;">Commercial Farming</button>
-    </div>
-    <button id="reset-choice" style="display:none; background:#81c784; color:#1b5e20; padding:6px 12px; margin-top:10px; border:none; border-radius:6px; cursor:pointer;">🔄 Reset / Change Farming Choice</button>
-  </div>
-
-  <div id="farming-output" style="color:#c8e6c9; font-size:14px; line-height:1.6;"></div>
-</section>
-
-<style>
-/* 🌿 Leaf background */
-#farming-ai {
-  background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='2' fill='%234caf50'/%3E%3C/svg%3E");
-  background-size: 40px 40px;
-  background-repeat: repeat;
-}
-#farming-ai button:hover {
-  opacity: 0.9;
-  transform: scale(1.02);
-  transition: all 0.2s ease;
-}
-</style>
-
-<script>
-// 🌿 Farming Recommendation AI with voice + memory + reset
-const farmButtons = document.querySelectorAll('.farm-choice');
-const output = document.getElementById('farming-output');
-const aiGreeting = document.getElementById('ai-greeting');
-const resetBtn = document.getElementById('reset-choice');
-const choiceButtons = document.getElementById('choice-buttons');
-
-// 🌾 Function to make SherwonAI speak
-function speak(text) {
-  if ('speechSynthesis' in window) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-ZA'; // South African English accent
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
-  } else {
-    console.warn("Speech synthesis not supported on this browser.");
-  }
-}
-
-// 🌿 Generate advice
-function showFarmingAdvice(type) {
-  output.innerHTML = "<p>🤖 SherwonAI is thinking...</p>";
-  setTimeout(() => {
-    let advice = "";
-    if (type === 'subsistence') {
-      advice = `
-        Here are some tips for subsistence farming:
-        Start small with vegetables like spinach, tomatoes, beans, and maize.
-        Maintain soil health with compost.
-        Water regularly and protect from pests.
-        Once comfortable, scale gradually.
-      `;
-      output.innerHTML = `
-        <h3>Subsistence Farming Tips 🌿</h3>
-        <ul>
-          <li>Start small with crops you can consume and sell locally.</li>
-          <li>Consider vegetables like spinach, tomatoes, beans, and maize.</li>
-          <li>Maintain soil fertility with compost and crop rotation.</li>
-          <li>Water regularly and monitor for pests.</li>
-          <li>Once comfortable, scale gradually by adding more crops or small livestock.</li>
-        </ul>`;
-    } else {
-      advice = `
-        Here's your commercial farming strategy:
-        Plan your budget and choose your crop or livestock type.
-        Manage soil, pest control, and irrigation carefully.
-        Record expenses and find reliable markets to sell your products.
-        Scale when profits become consistent.
-      `;
-      output.innerHTML = `
-        <h3>Commercial Farming Strategy 🌾</h3>
-        <ul>
-          <li>Define your farm type: crops, livestock, or mixed.</li>
-          <li>Create a budget: land, seeds, tools, labor, and irrigation.</li>
-          <li>Develop a production plan: planting schedule, yield targets.</li>
-          <li>Implement farm management practices: pest control, fertilization, and record keeping.</li>
-          <li>Market your products: local markets, co-ops, or online platforms.</li>
-          <li>Continuously analyze performance and scale strategically.</li>
-        </ul>`;
-    }
-    speak(advice);
-  }, 800);
-}
-
-// 🌱 Load last choice from memory
-window.addEventListener('DOMContentLoaded', () => {
-  const lastChoice = localStorage.getItem('lastFarmingChoice');
-  if (lastChoice) {
-    aiGreeting.textContent = `🌱 Welcome back! Last time you chose ${lastChoice} farming. Here's your advice:`;
-    showFarmingAdvice(lastChoice);
-    choiceButtons.style.display = "none";
-    resetBtn.style.display = "inline-block";
-    speak(`Welcome back, farmer! Here's your ${lastChoice} farming advice.`);
-  } else {
-    speak("Hi! I'm SherwonAI. What type of farming startup would you like to start?");
-  }
-});
-
-// 🌿 Handle user selection
-farmButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const type = btn.dataset.type;
-    aiGreeting.textContent = `🌱 You chose ${type} farming. Here's your advice:`;
-    showFarmingAdvice(type);
-    localStorage.setItem('lastFarmingChoice', type);
-    choiceButtons.style.display = "none";
-    resetBtn.style.display = "inline-block";
-  });
-});
-
-// 🌿 Reset choice
-resetBtn.addEventListener('click', () => {
-  localStorage.removeItem('lastFarmingChoice');
-  aiGreeting.textContent = "👋 Hi! I'm SherwonAI. What type of farming startup do you want to start?";
-  output.innerHTML = "";
-  choiceButtons.style.display = "block";
-  resetBtn.style.display = "none";
-  speak("You can now choose a new farming startup type.");
-});
-</script>
-
-
-
-<!-- Community -->
-<section id="community" class="card" style="background:#0b1f0f; color:#e2e8f0; padding:20px; border-radius:8px;">
-  <h2 class="mb-2 text-lg font-bold text-green-400">Community Q&A</h2>
-  <p class="small mb-4 text-gray-300">
-    Ask questions, share answers, and upvote helpful posts. Posts are stored locally.
-  </p>
-  <div class="grid">
-    <img src="community.pjp.jpg" alt="Community farming or planting together">
-    <!-- Ask a Question -->
-    <textarea id="post-text" placeholder="Ask a question or share your knowledge..." rows="3"
-      class="w-full p-2 border rounded mb-2 bg-[#1a2f1a] text-gray-200 border-green-600"></textarea>
-
-    <!-- Category Selection -->
-    <div class="row mt-2">
-      <label for="post-category" class="small">Choose a type:</label>
-      <select id="post-category" class="ml-2 border rounded p-1 bg-[#1a2f1a] text-gray-200 border-green-600">
-        <option value="question">❓ Question</option>
-        <option value="answer">💡 Answer</option>
-        <option value="discussion">💬 Discussion</option>
-      </select>
-    </div>
-
-    <!-- Buttons -->
-    <div class="row mt-3 space-x-2">
-      <button id="post-btn" class="btn" style="background:#16a34a; color:white; padding:6px 12px; border-radius:6px;">Post</button>
-      <button id="clear-posts" class="btn outline" style="border:1px solid #16a34a; color:#16a34a; padding:6px 12px; border-radius:6px;">Clear All</button>
-    </div>
-
-    <!-- Filter Tags -->
-    <div class="mt-4 space-x-2">
-      <span class="filter-tag active" data-filter="all">All</span>
-      <span class="filter-tag tag-question" data-filter="question">Question</span>
-      <span class="filter-tag tag-answer" data-filter="answer">Answer</span>
-      <span class="filter-tag tag-discussion" data-filter="discussion">Discussion</span>
-    </div>
-
-    <!-- Posts (Q&A Style) -->
-    <div id="posts" class="mt-6 space-y-4"></div>
-  </div>
-</section>
-
-<!-- Styling -->
-<style>
-  /* Category Highlight Colors */
-  .category-question { border-left: 5px solid #22c55e; background:#102515; }
-  .category-answer { border-left: 5px solid #4ade80; background:#132c18; }
-  .category-discussion { border-left: 5px solid #6b7280; background:#1a1f1a; }
-
-  /* Tag Styles */
-  .tag, .filter-tag {
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .tag-question { background: #14532d; color: #22c55e; }
-  .tag-answer { background: #166534; color: #4ade80; }
-  .tag-discussion { background: #374151; color: #d1d5db; }
-
-  /* Filter Tags */
-  .filter-tag { border: 1px solid transparent; margin-right: 4px; }
-  .filter-tag.active { border: 1px solid #22c55e; background: #14532d; color: #4ade80; }
-</style>
-
-<script>
-const postBtn = document.getElementById("post-btn");
-const clearBtn = document.getElementById("clear-posts");
-const postsDiv = document.getElementById("posts");
-const filterTags = document.querySelectorAll(".filter-tag");
-
-// Example names for replies
-const exampleUsers = ["Addy", "Tumi", "Sipho", "Lebo", "Zola"];
-const exampleResponses = [
-  "plz try this strategy for farming maize, maybe it will work!",
-  "I found that spacing the plants properly really helps.",
-  "Water early in the morning, it seems to make a big difference.",
-  "Try rotating your crops, it improved my harvest.",
-  "Use companion planting, it worked for me!"
-];
-
-// ===== Voice speaking function =====
-function speak(text, gender="neutral") {
-    const utter = new SpeechSynthesisUtterance(text);
-    const voices = speechSynthesis.getVoices();
-    let chosenVoice;
-
-    if (gender === "male") {
-        chosenVoice = voices.find(v => v.name.toLowerCase().includes("male")) || voices[0];
-    } else if (gender === "female") {
-        chosenVoice = voices.find(v => v.name.toLowerCase().includes("female")) || voices[0];
-    } else {
-        chosenVoice = voices[0];
-    }
-
-    utter.voice = chosenVoice;
-    utter.rate = 1;
-    utter.pitch = 1;
-    speechSynthesis.speak(utter);
-}
-
-// Add Post
-postBtn.addEventListener("click", () => {
-  const text = document.getElementById("post-text").value.trim();
-  const category = document.getElementById("post-category").value;
-
-  if (!text) return alert("Please write something before posting.");
-
-  // Create main post
-  const post = document.createElement("div");
-  post.className = `flex flex-col border rounded p-4 shadow category-${category}`;
-  post.dataset.category = category;
-
-  post.innerHTML = `
-    <div class="flex flex-col items-start">
-      <h3 class="font-semibold ${
-        category === "question"
-          ? "text-green-400"
-          : category === "answer"
-          ? "text-green-300"
-          : "text-gray-300"
-      }">${category.charAt(0).toUpperCase() + category.slice(1)}</h3>
-      <p class="mt-1 text-gray-200">${text}</p>
-    </div>
-    <div class="mt-2 flex space-x-2 text-sm text-gray-400">
-      <span class="tag tag-${category}">${category.charAt(0).toUpperCase() + category.slice(1)}</span>
-      <button class="hover:underline">💬 Reply</button>
-    </div>
-  `;
-
-  postsDiv.prepend(post);
-
-  // If question, generate 3 random example answers
-  if (category === "question") {
-    const userNameInput = userName || "Farmer"; // use AI stored name or default
-    const repliesToSpeak = [];
-
-    for (let i = 0; i < 3; i++) {
-      const reply = document.createElement("div");
-      reply.className = "flex flex-col border-l-4 border-green-600 pl-4 mt-2 bg-[#102515] p-2 rounded";
-      const randomUser = exampleUsers[Math.floor(Math.random() * exampleUsers.length)];
-      const randomResponse = exampleResponses[Math.floor(Math.random() * exampleResponses.length)];
-      const replyText = `Hello ${userNameInput}, ${randomResponse}`;
-      reply.innerHTML = `<strong>${randomUser}:</strong> ${replyText}`;
-      post.appendChild(reply);
-
-      repliesToSpeak.push(`${randomUser} says: ${replyText}`);
-    }
-
-    // Speak each reply with small delay between them
-    repliesToSpeak.forEach((txt, idx) => {
-      setTimeout(() => speak(txt, userGender), idx * 3000);
-    });
-  }
-
-  document.getElementById("post-text").value = "";
-});
-
-// Clear Posts
-clearBtn.addEventListener("click", () => {
-  postsDiv.innerHTML = "";
-});
-
-// Filter Posts
-filterTags.forEach(tag => {
-  tag.addEventListener("click", () => {
-    filterTags.forEach(t => t.classList.remove("active"));
-    tag.classList.add("active");
-
-    const filter = tag.dataset.filter;
-    const posts = postsDiv.querySelectorAll("div[data-category]");
-
-    posts.forEach(post => {
-      if (filter === "all" || post.dataset.category === filter) {
-        post.style.display = "flex";
+    // 🌾 Function to make SherwonAI speak
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-ZA'; // South African English accent
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
       } else {
-        post.style.display = "none";
+        console.warn("Speech synthesis not supported on this browser.");
+      }
+    }
+
+    // 🌿 Generate advice
+    function showFarmingAdvice(type) {
+      output.innerHTML = "<p>🤖 SherwonAI is thinking...</p>";
+      setTimeout(() => {
+        let advice = "";
+        if (type === 'subsistence') {
+          advice = `
+            Here are some tips for subsistence farming:
+            Start small with vegetables like spinach, tomatoes, beans, and maize.
+            Maintain soil health with compost.
+            Water regularly and protect from pests.
+            Once comfortable, scale gradually.
+          `;
+          output.innerHTML = `
+            <h3>Subsistence Farming Tips 🌿</h3>
+            <ul>
+              <li>Start small with crops you can consume and sell locally.</li>
+              <li>Consider vegetables like spinach, tomatoes, beans, and maize.</li>
+              <li>Maintain soil fertility with compost and crop rotation.</li>
+              <li>Water regularly and monitor for pests.</li>
+              <li>Once comfortable, scale gradually by adding more crops or small livestock.</li>
+            </ul>`;
+        } else {
+          advice = `
+            Here's your commercial farming strategy:
+            Plan your budget and choose your crop or livestock type.
+            Manage soil, pest control, and irrigation carefully.
+            Record expenses and find reliable markets to sell your products.
+            Scale when profits become consistent.
+          `;
+          output.innerHTML = `
+            <h3>Commercial Farming Strategy 🌾</h3>
+            <ul>
+              <li>Define your farm type: crops, livestock, or mixed.</li>
+              <li>Create a budget: land, seeds, tools, labor, and irrigation.</li>
+              <li>Develop a production plan: planting schedule, yield targets.</li>
+              <li>Implement farm management practices: pest control, fertilization, and record keeping.</li>
+              <li>Market your products: local markets, co-ops, or online platforms.</li>
+              <li>Continuously analyze performance and scale strategically.</li>
+            </ul>`;
+        }
+        speak(advice);
+      }, 800);
+    }
+
+    // 🌱 Load last choice from memory
+    window.addEventListener('DOMContentLoaded', () => {
+      const lastChoice = localStorage.getItem('lastFarmingChoice');
+      if (lastChoice) {
+        aiGreeting.textContent = `🌱 Welcome back! Last time you chose ${lastChoice} farming. Here's your advice:`;
+        showFarmingAdvice(lastChoice);
+        choiceButtons.style.display = "none";
+        resetBtn.style.display = "inline-block";
+        speak(`Welcome back, farmer! Here's your ${lastChoice} farming advice.`);
+      } else {
+        speak("Hi! I'm SherwonAI. What type of farming startup would you like to start?");
       }
     });
-  });
-});
-</script>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div>© 2025 Food for Learning — Free student toolkit (no signup)</div>
-  </footer>
+    // 🌿 Handle user selection
+    farmButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.dataset.type;
+        aiGreeting.textContent = `🌱 You chose ${type} farming. Here's your advice:`;
+        showFarmingAdvice(type);
+        localStorage.setItem('lastFarmingChoice', type);
+        choiceButtons.style.display = "none";
+        resetBtn.style.display = "inline-block";
+      });
+    });
+
+    // 🌿 Reset choice
+    resetBtn.addEventListener('click', () => {
+      localStorage.removeItem('lastFarmingChoice');
+      aiGreeting.textContent = "👋 Hi! I'm SherwonAI. What type of farming startup do you want to start?";
+      output.innerHTML = "";
+      choiceButtons.style.display = "block";
+      resetBtn.style.display = "none";
+      speak("You can now choose a new farming startup type.");
+    });
+
+    // Community Script
+    const postBtn = document.getElementById("post-btn");
+    const clearBtn = document.getElementById("clear-posts");
+    const postsDiv = document.getElementById("posts");
+    const filterTags = document.querySelectorAll(".filter-tag");
+
+    // Example names for replies
+    const exampleUsers = ["Addy", "Tumi", "Sipho", "Lebo", "Zola"];
+    const exampleResponses = [
+      "plz try this strategy for farming maize, maybe it will work!",
+      "I found that spacing the plants properly really helps.",
+      "Water early in the morning, it seems to make a big difference.",
+      "Try rotating your crops, it improved my harvest.",
+      "Use companion planting, it worked for me!"
+    ];
+
+    // ===== Voice speaking function =====
+    function speak(text, gender="neutral") {
+      const utter = new SpeechSynthesisUtterance(text);
+      const voices = speechSynthesis.getVoices();
+      let chosenVoice;
+
+      if (gender === "male") {
+        chosenVoice = voices.find(v => v.name.toLowerCase().includes("male")) || voices[0];
+      } else if (gender === "female") {
+        chosenVoice = voices.find(v => v.name.toLowerCase().includes("female")) || voices[0];
+      } else {
+        chosenVoice = voices[0];
+      }
+
+      utter.voice = chosenVoice;
+      utter.rate = 1;
+      utter.pitch = 1;
+      speechSynthesis.speak(utter);
+    }
+
+    // Add Post
+    postBtn.addEventListener("click", () => {
+      const text = document.getElementById("post-text").value.trim();
+      const category = document.getElementById("post-category").value;
+
+      if (!text) return alert("Please write something before posting.");
+
+      // Create main post
+      const post = document.createElement("div");
+      post.className = `flex flex-col border rounded p-4 shadow category-${category}`;
+      post.dataset.category = category;
+
+      post.innerHTML = `
+        <div class="flex flex-col items-start">
+          <h3 class="font-semibold ${
+            category === "question"
+              ? "text-green-400"
+              : category === "answer"
+              ? "text-green-300"
+              : "text-gray-300"
+          }">${category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+          <p class="mt-1 text-gray-200">${text}</p>
+        </div>
+        <div class="mt-2 flex space-x-2 text-sm text-gray-400">
+          <span class="tag tag-${category}">${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+          <button class="hover:underline">💬 Reply</button>
+        </div>
+      `;
+
+      postsDiv.prepend(post);
+
+      // If question, generate 3 random example answers
+      if (category === "question") {
+        const userNameInput = userName || "Farmer"; // use AI stored name or default
+        const repliesToSpeak = [];
+
+        for (let i = 0; i < 3; i++) {
+          const reply = document.createElement("div");
+          reply.className = "flex flex-col border-l-4 border-green-600 pl-4 mt-2 bg-[#102515] p-2 rounded";
+          const randomUser = exampleUsers[Math.floor(Math.random() * exampleUsers.length)];
+          const randomResponse = exampleResponses[Math.floor(Math.random() * exampleResponses.length)];
+          const replyText = `Hello ${userNameInput}, ${randomResponse}`;
+          reply.innerHTML = `<strong>${randomUser}:</strong> ${replyText}`;
+          post.appendChild(reply);
+
+          repliesToSpeak.push(`${randomUser} says: ${replyText}`);
+        }
+
+        // Speak each reply with small delay between them
+        repliesToSpeak.forEach((txt, idx) => {
+          setTimeout(() => speak(txt, userGender), idx * 3000);
+        });
+      }
+
+      document.getElementById("post-text").value = "";
+    });
+
+    // Clear Posts
+    clearBtn.addEventListener("click", () => {
+      postsDiv.innerHTML = "";
+    });
+
+    // Filter Posts
+    filterTags.forEach(tag => {
+      tag.addEventListener("click", () => {
+        filterTags.forEach(t => t.classList.remove("active"));
+        tag.classList.add("active");
+
+        const filter = tag.dataset.filter;
+        const posts = postsDiv.querySelectorAll("div[data-category]");
+
+        posts.forEach(post => {
+          if (filter === "all" || post.dataset.category === filter) {
+            post.style.display = "flex";
+          } else {
+            post.style.display = "none";
+          }
+        });
+      });
+    });
+  </script>
 
   <script src="script.js"></script>
 </body>
