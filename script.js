@@ -2,9 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Escape HTML ---------- */
   function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
   }
 
   /* ---------- Daily Tips & Motivation ---------- */
@@ -50,6 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
     utter.voice = chosenVoice;
     utter.rate = 1;
     utter.pitch = 1;
+    utter.volume = 1;
+    utter.lang = "en-ZA";
+    speechSynthesis.cancel();
     speechSynthesis.speak(utter);
   }
 
@@ -165,178 +173,153 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadTasks();
 
-/* ---------- Seed Spacing & Fertilizer ---------- */
-/* ---------- SHERWON FARM ASSISTANT ---------- */
+  /* ---------- Seed Spacing & Fertilizer ---------- */
+  /* ---------- SHERWON FARM ASSISTANT ---------- */
 
-// === GET USER NAME ===
-const userName = localStorage.getItem('sherwonUserName') || 'Farmer';
+  // === GET USER NAME ===
+  const userName = localStorage.getItem('sherwonUserName') || 'Farmer';
 
-// === FARM POPUP OPEN/CLOSE ===
-const farmPopup = document.getElementById('farm-popup');
-document.getElementById('open-calc-btn')?.addEventListener('click', () => farmPopup.style.display = 'block');
-document.getElementById('farm-popup-close')?.addEventListener('click', () => farmPopup.style.display = 'none');
+  // === FARM POPUP OPEN/CLOSE ===
+  const farmPopup = document.getElementById('farm-popup');
+  document.getElementById('open-calc-btn')?.addEventListener('click', () => farmPopup.style.display = 'block');
+  document.getElementById('farm-popup-close')?.addEventListener('click', () => farmPopup.style.display = 'none');
 
-// === MODAL OPEN/CLOSE ===
-const modal = document.getElementById("calcModal");
-document.getElementById("openCalc")?.addEventListener("click", () => modal.classList.remove("hidden"));
-document.getElementById("closeCalc")?.addEventListener("click", () => modal.classList.add("hidden"));
+  // === MODAL OPEN/CLOSE ===
+  const modal = document.getElementById("calcModal");
+  document.getElementById("openCalc")?.addEventListener("click", () => modal.classList.remove("hidden"));
+  document.getElementById("closeCalc")?.addEventListener("click", () => modal.classList.add("hidden"));
 
-// === CALCULATOR LOGIC ===
-const display = document.getElementById("display");
-const seedResult = document.getElementById("seedResult");
-const promptBox = document.getElementById("dimensionPrompt");
-const chooseWidth = document.getElementById("chooseWidth");
-const chooseLength = document.getElementById("chooseLength");
-const acBtn = document.getElementById("acBtn");
+  // === CALCULATOR LOGIC ===
+  const display = document.getElementById("display");
+  const seedResult = document.getElementById("seedResult");
+  const promptBox = document.getElementById("dimensionPrompt");
+  const chooseWidth = document.getElementById("chooseWidth");
+  const chooseLength = document.getElementById("chooseLength");
+  const acBtn = document.getElementById("acBtn");
 
-let expression = "";
-let lastInputType = "";
+  let expression = "";
+  let lastInputType = "";
 
-// === Handle Width/Length Choice ===
-function askDimension() {
-  promptBox.style.display = "block";
-  sherwonSpeak("Are you entering width or length? Please click to choose.");
-}
+  // === Handle Width/Length Choice ===
+  function askDimension() {
+    promptBox.style.display = "block";
+    sherwonSpeak("Are you entering width or length? Please click to choose.");
+  }
 
-chooseWidth?.addEventListener("click", () => {
-  promptBox.style.display = "none";
-  sherwonSpeak("You selected width.");
-});
-chooseLength?.addEventListener("click", () => {
-  promptBox.style.display = "none";
-  sherwonSpeak("You selected length.");
-});
-
-// === AC CLEAR BUTTON ===
-acBtn?.addEventListener("click", () => {
-  expression = "";
-  display.textContent = "";
-  seedResult.textContent = "";
-  sherwonSpeak("Cleared. Please start again.");
-});
-
-// === KEYBOARD HANDLING ===
-document.querySelectorAll(".keypad button").forEach(btn => {
-  if (btn.id === "acBtn") return; // skip AC here
-
-  btn.addEventListener("click", () => {
-    const val = btn.textContent;
-
-    if (val === "=") {
-      try {
-        const result = eval(expression);
-        display.textContent = result;
-        handleSeedSpacing(result);
-      } catch {
-        display.textContent = "Error";
-        sherwonSpeak("There is an error in your calculation.");
-      }
-    } else {
-      expression += val;
-      display.textContent = expression;
-
-      if (!isNaN(val)) {
-        // number entered
-        if (lastInputType !== "number") askDimension();
-        lastInputType = "number";
-      } else if (["+", "-", "*", "/"].includes(val)) {
-        sherwonSpeak(`Operator ${val} entered. Please enter the next value.`);
-        askDimension();
-        lastInputType = "operator";
-      }
-    }
+  chooseWidth?.addEventListener("click", () => {
+    promptBox.style.display = "none";
+    sherwonSpeak("You selected width.");
   });
-});
+  chooseLength?.addEventListener("click", () => {
+    promptBox.style.display = "none";
+    sherwonSpeak("You selected length.");
+  });
 
-// === SEED SPACING CALCULATION ===
-function handleSeedSpacing(result) {
-  const perRow = Math.floor(result / 10);
-  const message = `You can plant about ${perRow} plants in this row 🌱`;
-  seedResult.textContent = message;
-  sherwonSpeak(`Nice job ${localStorage.getItem("sherwonName") || 'farmer'}! ${message}`);
-}
+  // === AC CLEAR BUTTON ===
+  acBtn?.addEventListener("click", () => {
+    expression = "";
+    display.textContent = "";
+    seedResult.textContent = "";
+    sherwonSpeak("Cleared. Please start again.");
+  });
 
-// === FERTILIZER CALCULATION ===
-document.getElementById("fertCalc")?.addEventListener("click", () => {
-  const base = parseFloat(display.textContent) || 0;
-  const fert = (base / 10 * 0.5).toFixed(1);
-  const msg = `You'll need about ${fert} kg of manure for this spacing.`;
-  document.getElementById("fertResult").textContent = msg;
-  sherwonSpeak(`${msg} Keep the soil moist, ${localStorage.getItem("sherwonName") || 'farmer'}.`);
-});
+  // === KEYBOARD HANDLING ===
+  document.querySelectorAll(".keypad button").forEach(btn => {
+    if (btn.id === "acBtn") return; // skip AC here
 
-/* ---------- SHERWON AI ADVISOR (REAL LINKS) ---------- */
-const fertilizerLinks = [
-  {
-    title: "Agrimark NPK Blends",
-    link: "https://www.agrimark.co.za/category/fertilizers/npk-blends",
-    snippet: "Browse various NPK blend fertilizers for large and small farms."
-  },
-  {
-    title: "Farm Supplies – 2:3:4 Fertilizer Bag",
-    link: "https://www.farmsupplies.co.za/2-3-4-30-50kg-fertilizer-bag?srsltid=AfmBOooF0aWkYCRMcsjey78C32hwr22j1eBrImOw3nqx7gXFMmIi95ae",
-    snippet: "Affordable 50kg fertilizer bags available in South Africa."
-  },
-  {
-    title: "Leroy Merlin – Chemical Fertilizers",
-    link: "https://leroymerlin.co.za/garden-landscaping/pest-control-fertilizers/chemical-fertilizer",
-    snippet: "Shop a wide range of chemical and organic fertilizers online."
-  },
-  {
-    title: "Takealot – Organic Garden Fertilizer",
-    link: "https://www.takealot.com/all?_sb=1&_r=1&qsearch=fertilizer",
-    snippet: "Find affordable garden fertilizers delivered to your door."
+    btn.addEventListener("click", () => {
+      const val = btn.textContent;
+
+      if (val === "=") {
+        try {
+          const result = eval(expression);
+          display.textContent = result;
+          handleSeedSpacing(result);
+        } catch {
+          display.textContent = "Error";
+          sherwonSpeak("There is an error in your calculation.");
+        }
+      } else {
+        expression += val;
+        display.textContent = expression;
+
+        if (!isNaN(val)) {
+          // number entered
+          if (lastInputType !== "number") askDimension();
+          lastInputType = "number";
+        } else if (["+", "-", "*", "/"].includes(val)) {
+          sherwonSpeak(`Operator ${val} entered. Please enter the next value.`);
+          askDimension();
+          lastInputType = "operator";
+        }
+      }
+    });
+  });
+
+  // === SEED SPACING CALCULATION ===
+  function handleSeedSpacing(result) {
+    const perRow = Math.floor(result / 10);
+    const message = `You can plant about ${perRow} plants in this row 🌱`;
+    seedResult.textContent = message;
+    sherwonSpeak(`Nice job ${localStorage.getItem("sherwonUserName") || 'farmer'}! ${message}`);
   }
-];
 
-// === AI ADVISOR ===
-document.getElementById("aiTalk")?.addEventListener("click", async () => {
-  const budget = document.getElementById("budgetInput").value.trim();
-  const adviceDiv = document.getElementById("aiAdvice");
+  // === FERTILIZER CALCULATION ===
+  document.getElementById("fertCalc")?.addEventListener("click", () => {
+    const base = parseFloat(display.textContent) || 0;
+    const fert = (base / 10 * 0.5).toFixed(1);
+    const msg = `You'll need about ${fert} kg of manure for this spacing.`;
+    document.getElementById("fertResult").textContent = msg;
+    sherwonSpeak(`${msg} Keep the soil moist, ${localStorage.getItem("sherwonUserName") || 'farmer'}.`);
+  });
 
-  if (!budget) {
-    sherwonSpeak("Please tell me your budget first!");
-    adviceDiv.innerHTML = `<p style="color:var(--accent)">💬 Enter your budget to get fertilizer suggestions.</p>`;
-    return;
-  }
+  /* ---------- SHERWON AI ADVISOR (REAL LINKS) ---------- */
+  const fertilizerLinks = [
+    {
+      title: "Agrimark NPK Blends",
+      link: "https://www.agrimark.co.za/category/fertilizers/npk-blends",
+      snippet: "Browse various NPK blend fertilizers for large and small farms."
+    },
+    {
+      title: "Farm Supplies – 2:3:4 Fertilizer Bag",
+      link: "https://www.farmsupplies.co.za/2-3-4-30-50kg-fertilizer-bag?srsltid=AfmBOooF0aWkYCRMcsjey78C32hwr22j1eBrImOw3nqx7gXFMmIi95ae",
+      snippet: "Affordable 50kg fertilizer bags available in South Africa."
+    },
+    {
+      title: "Leroy Merlin – Chemical Fertilizers",
+      link: "https://leroymerlin.co.za/garden-landscaping/pest-control-fertilizers/chemical-fertilizer",
+      snippet: "Shop a wide range of chemical and organic fertilizers online."
+    },
+    {
+      title: "Takealot – Organic Garden Fertilizer",
+      link: "https://www.takealot.com/all?_sb=1&_r=1&qsearch=fertilizer",
+      snippet: "Find affordable garden fertilizers delivered to your door."
+    }
+  ];
 
-  sherwonSpeak(`Okay ${userName}, let’s find fertilizer options under ${budget} Rand.`);
+  // === AI ADVISOR ===
+  document.getElementById("aiTalk")?.addEventListener("click", async () => {
+    const budget = document.getElementById("budgetInput").value.trim();
+    const adviceDiv = document.getElementById("aiAdvice");
 
-  const listHTML = fertilizerLinks.map(f => `
-    <p>💡 <strong>${escapeHtml(f.title)}</strong><br>
-    ${escapeHtml(f.snippet)}<br>
-    <a href="${f.link}" target="_blank" style="color:var(--accent)">🔗 View Product</a></p>
-  `).join("");
+    if (!budget) {
+      sherwonSpeak("Please tell me your budget first!");
+      adviceDiv.innerHTML = `<p style="color:var(--accent)">💬 Enter your budget to get fertilizer suggestions.</p>`;
+      return;
+    }
 
-  adviceDiv.innerHTML = listHTML;
+    sherwonSpeak(`Okay ${userName}, let’s find fertilizer options under ${budget} Rand.`);
 
-  sherwonSpeak(`Here’s a suggestion: ${fertilizerLinks[0].title}. ${fertilizerLinks[0].snippet}`);
-});
+    const listHTML = fertilizerLinks.map(f => `
+      <p>💡 <strong>${escapeHtml(f.title)}</strong><br>
+      ${escapeHtml(f.snippet)}<br>
+      <a href="${f.link}" target="_blank" style="color:var(--accent)">🔗 View Product</a></p>
+    `).join("");
 
-/* ---------- ESCAPE HTML FUNCTION ---------- */
-function escapeHtml(text) {
-  const map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  };
-  return text.replace(/[&<>"']/g, m => map[m]);
-}
+    adviceDiv.innerHTML = listHTML;
 
-/* ---------- TEXT-TO-SPEECH FUNCTION ---------- */
-function sherwonSpeak(message, gender = "neutral") {
-  const synth = window.speechSynthesis;
-  const utter = new SpeechSynthesisUtterance(message);
-  utter.pitch = 1;
-  utter.rate = 1;
-  utter.volume = 1;
-  utter.lang = "en-ZA";
-  synth.cancel();
-  synth.speak(utter);
-}
-
+    sherwonSpeak(`Here’s a suggestion: ${fertilizerLinks[0].title}. ${fertilizerLinks[0].snippet}`);
+  });
 
   /* ---------- Watering Guide ---------- */
   (() => {
@@ -346,23 +329,17 @@ function sherwonSpeak(message, gender = "neutral") {
     if (!waterBtn || !waterFreq || !waterOut) return;
 
     const getUser = () => localStorage.getItem('sherwonUserName') || 'friend';
-    const speakText = (text, rate=1, pitch=0.9) => { 
-      if (!speechSynthesis) return;
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.rate = rate;
-      utter.pitch = pitch;
-      utter.volume = 1;
-      utter.voice = speechSynthesis.getVoices()[0];
-      speechSynthesis.cancel();
-      setTimeout(()=>speechSynthesis.speak(utter), 300);
-    };
 
     waterBtn.addEventListener('click', () => {
       const freq = Number(waterFreq.value);
       const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       const start = new Date();
       let schedule = [];
-      for (let i=0;i<7;i++){ const d=new Date(start); d.setDate(start.getDate()+i); if(freq>0 && i%freq===0) schedule.push(days[d.getDay()]); }
+      for (let i=0;i<7;i++){ 
+        const d=new Date(start); 
+        d.setDate(start.getDate()+i); 
+        if(freq>0 && i%freq===0) schedule.push(days[d.getDay()]); 
+      }
 
       waterOut.textContent = schedule.length ? '💧 Water on: '+schedule.join(', ') : 'Please select a valid watering frequency.';
 
@@ -385,172 +362,182 @@ function sherwonSpeak(message, gender = "neutral") {
       ];
 
       message += funnyLines[Math.floor(Math.random()*funnyLines.length)];
-      speakText(message,1,1);
+      sherwonSpeak(message);
     });
   })();
 
+  /* ---------- Weather (with realistic cool & windy fallback) ---------- */
+  const weatherBtn = document.getElementById('get-weather');
+  const weatherInput = document.getElementById('weather-city');
+  const weatherResult = document.getElementById('weather-result');
+  let userNameGlobal = window.userName || "Farmer";
 
-  /* ---------- Weather (with summer fallback) ---------- */
-const weatherBtn = document.getElementById('get-weather');
-const weatherInput = document.getElementById('weather-city');
-const weatherResult = document.getElementById('weather-result');
-let userNameGlobal = window.userName || "Farmer";
+  function getGardenAdvice(weatherDesc) {
+    weatherDesc = weatherDesc.toLowerCase();
+    if (weatherDesc.includes("rain")) return "Looks like rain today! No need to water your plants, enjoy the shower!";
+    if (weatherDesc.includes("cloud")) return "A bit cloudy today — a good time to check if your plants need light watering.";
+    if (weatherDesc.includes("wind")) return "It's windy! Keep your lighter pots or seedlings sheltered.";
+    if (weatherDesc.includes("sun") || weatherDesc.includes("clear")) return "It's sunny! Time to water your spinach and dance with the sun!";
+    if (weatherDesc.includes("storm") || weatherDesc.includes("thunder")) return "Stormy day! Stay safe and let nature water your plants.";
+    return "Check your garden, " + userNameGlobal + "! The weather is a bit unpredictable today, so use your instincts!";
+  }
 
-function getGardenAdvice(weatherDesc) {
-  weatherDesc = weatherDesc.toLowerCase();
-  if (weatherDesc.includes("rain")) return "Looks like rain today! No need to water your plants, enjoy the shower!";
-  if (weatherDesc.includes("cloud")) return "Cloudy day! Maybe water your garden a little if the soil feels dry.";
-  if (weatherDesc.includes("sun") || weatherDesc.includes("clear")) return "It's sunny! Time to water your spinach and dance with the sun!";
-  if (weatherDesc.includes("storm") || weatherDesc.includes("thunder")) return "Stormy day! Stay safe and let nature water your plants.";
-  return "Check your garden, " + userNameGlobal + "! The weather is tricky today, use your gardening instincts!";
-}
+  // --- Main showWeather function
+  async function showWeather(city) {
+    try {
+      const resp = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
+      let data = null;
+      if (resp.ok) data = await resp.json();
 
-// --- Main showWeather function
-async function showWeather(city) {
-  try {
-    const resp = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
-    let data = null;
-    if (resp.ok) data = await resp.json();
+      let temp, desc, humidity, wind, resolvedCity;
 
-    let temp, desc, humidity, wind, resolvedCity;
+      if (data && data.main) {
+        // Real API response
+        temp = data.main.temp;
+        desc = data.weather?.[0]?.description ?? "N/A";
+        humidity = data.main.humidity;
+        wind = data.wind?.speed;
+        resolvedCity = data.name ?? city;
+      } else {
+        // Fallback — mild, breezy day
+        temp = (20 + Math.random() * 2).toFixed(1);
+        desc = "partly cloudy with a gentle breeze";
+        humidity = Math.floor(55 + Math.random() * 10);
+        wind = (2 + Math.random() * 2).toFixed(1);
+        resolvedCity = city;
+      }
 
-    if (data && data.main) {
-      // Real API response
-      temp = data.main.temp;
-      desc = data.weather?.[0]?.description ?? "N/A";
-      humidity = data.main.humidity;
-      wind = data.wind?.speed;
-      resolvedCity = data.name ?? city;
-    } else {
-      // Summer fallback (hot & sunny)
-      temp = (28 + Math.random() * 3).toFixed(1); // 28–31°C
-      desc = "sunny";
-      humidity = Math.floor(40 + Math.random() * 10); // 40–50%
-      wind = (1 + Math.random() * 2).toFixed(1); // 1–3 m/s
-      resolvedCity = city;
+      weatherResult.innerHTML = `
+        <p>Hello ${userNameGlobal}, the weather in ${resolvedCity} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, and wind speed ${wind} m/s.</p>
+        <p><em>${getGardenAdvice(desc)}</em></p>
+      `;
+
+      sherwonSpeak(
+        `Hello ${userNameGlobal}, the weather in ${resolvedCity} today is ${desc}, with a temperature of ${temp} degrees Celsius, humidity around ${humidity} percent, and gentle winds at ${wind} meters per second. ${getGardenAdvice(desc)}`,
+        "male"
+      );
+
+    } catch (err) {
+      // Backup fallback if fetch fails completely
+      const temp = (20 + Math.random() * 2).toFixed(1);
+      const desc = "partly cloudy with light wind";
+      const humidity = Math.floor(55 + Math.random() * 10);
+      const wind = (2 + Math.random() * 2).toFixed(1);
+      weatherResult.innerHTML = `
+        <p>Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, and wind speed ${wind} m/s.</p>
+        <p><em>${getGardenAdvice(desc)}</em></p>
+      `;
+      sherwonSpeak(
+        `Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, with a temperature of ${temp} degrees Celsius, humidity around ${humidity} percent, and light wind at ${wind} meters per second. ${getGardenAdvice(desc)}`,
+        "male"
+      );
     }
-
-    weatherResult.innerHTML = `
-      <p>Hello ${userNameGlobal}, the weather in ${resolvedCity} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, wind speed ${wind} m/s.</p>
-      <p><em>${getGardenAdvice(desc)}</em></p>
-    `;
-
-    // Speak naturally
-    sherwonSpeak(`Hello ${userNameGlobal}, the weather in ${resolvedCity} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, wind speed ${wind} m/s. ${getGardenAdvice(desc)}`, "male");
-
-  } catch (err) {
-    // Fallback if fetch completely fails
-    const temp = (28 + Math.random() * 3).toFixed(1);
-    const desc = "sunny";
-    const humidity = Math.floor(40 + Math.random() * 10);
-    const wind = (1 + Math.random() * 2).toFixed(1);
-    weatherResult.innerHTML = `
-      <p>Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, wind speed ${wind} m/s.</p>
-      <p><em>${getGardenAdvice(desc)}</em></p>
-    `;
-    sherwonSpeak(`Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, wind speed ${wind} m/s. ${getGardenAdvice(desc)}`, "male");
   }
-}
 
-// --- Button click logic
-weatherBtn?.addEventListener('click', async () => {
-  const city = weatherInput.value.trim();
-  if (!city) {
-    sherwonSpeak("Please type your town.", "male");
-    weatherResult.textContent = "Please enter a city or suburb.";
-    return;
-  }
-  await showWeather(city);
-});
-
+  // --- Button click logic
+  weatherBtn?.addEventListener('click', async () => {
+    const city = weatherInput.value.trim();
+    if (!city) {
+      sherwonSpeak("Please type your town.", "male");
+      weatherResult.textContent = "Please enter a city or suburb.";
+      return;
+    }
+    await showWeather(city);
+  });
 
   /* ---------- Chatbot + AI ---------- */
-  async function fetchGoogleResults(query){
-    return fertilizerLinks.map(i=>`${i.title}: ${i.snippet} (${i.link})`).join("\n\n");
+  async function fetchGoogleResults(query) {
+    try {
+      const resp = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      if (!resp.ok) return "No search results found.";
+      const data = await resp.json();
+      return (data.items || []).map(i => `${i.title}: ${i.snippet} (${i.link})`).join("\n\n");
+    } catch (err) {
+      console.error("Search fetch error:", err);
+      return "Unable to fetch results at the moment.";
+    }
   }
 
-  async function aiReply(q){
+  async function aiReply(q) {
     const t = q.toLowerCase().trim();
     const knowledge = {
-      "soil":"🌍 Soil is the top layer of the earth that supports plant life...",
-      "types of soil":"🪴 Main types of soil are: Sandy, Clay, Loamy, and Silt.",
-      "farming":"🚜 Farming is growing crops and raising animals for food...",
-      "pests":"🐛 Pests are insects or animals that harm crops.",
-      "fertilizer":"🌿 Fertilizers are nutrients added to soil.",
-      "organic farming":"🍀 Organic farming avoids chemical fertilizers or pesticides.",
-      "irrigation":"💧 Irrigation is watering crops using drip, sprinklers, etc.",
-      "crop rotation":"🔄 Crop rotation means planting different crops each season.",
+      "soil": "🌍 Soil is the top layer of the earth that supports plant life...",
+      "types of soil": "🪴 Main types of soil are: Sandy, Clay, Loamy, and Silt.",
+      "farming": "🚜 Farming is growing crops and raising animals for food...",
+      "pests": "🐛 Pests are insects or animals that harm crops.",
+      "fertilizer": "🌿 Fertilizers are nutrients added to soil.",
+      "organic farming": "🍀 Organic farming avoids chemical fertilizers or pesticides.",
+      "irrigation": "💧 Irrigation is watering crops using drip, sprinklers, etc.",
+      "crop rotation": "🔄 Crop rotation means planting different crops each season.",
     };
-    for(const key in knowledge) if(t.includes(key)) return knowledge[key];
-    if(/^[0-9+\-*/().\s]+$/.test(q)) try{return `Answer: ${eval(q)}`}catch(e){}
-    if(t.includes("water")) return "💧 Water plants early in the morning or evening — about 2–3 times per week.";
-    if(t.includes("pest")) return "🐞 Use neem oil, garlic spray, or marigolds to naturally control pests.";
-    if(t.includes("what to plant")||t.includes("what can i plant")) return "🌱 Start with easy crops like spinach, lettuce, or tomatoes.";
-
-    if(t.includes("fertilizer") || t.includes("manure") || t.includes("budget")){
-      document.getElementById("aiTalk").click();
+    for (const key in knowledge) if (t.includes(key)) return knowledge[key];
+    if (/^[0-9+\-*/().\s]+$/.test(q)) try { return `Answer: ${eval(q)}` } catch (e) { }
+    if (t.includes("water")) return "💧 Water plants early in the morning or evening — about 2–3 times per week.";
+    if (t.includes("pest")) return "🐞 Use neem oil, garlic spray, or marigolds to naturally control pests.";
+    if (t.includes("what to plant") || t.includes("what can i plant")) return "🌱 Start with easy crops like spinach, lettuce, or tomatoes.";
+    if (t.includes("fertilizer") || t.includes("manure") || t.includes("budget")) {
+      document.getElementById("aiTalk")?.click();
       return `Here are some fertilizer/manure options for you:`;
     }
-
     return await fetchGoogleResults(q);
   }
 
-  async function addChatBubble(text,type='ai'){
-    const container=document.getElementById('chat-container');
-    if(!container) return;
-    const div=document.createElement('div');
-    div.className=`chat-bubble ${type}-bubble`;
-    div.textContent=text;
+  async function addChatBubble(text, type = 'ai') {
+    const container = document.getElementById('chat-container');
+    if (!container) return;
+    const div = document.createElement('div');
+    div.className = `chat-bubble ${type}-bubble`;
+    div.textContent = text;
     container.appendChild(div);
-    container.scrollTop=container.scrollHeight;
-    if(type==='ai') speechSynthesis?.speak(new SpeechSynthesisUtterance(text));
+    container.scrollTop = container.scrollHeight;
+    if (type === 'ai') sherwonSpeak(text);
   }
 
-  const chatInput=document.getElementById('ai-search');
-  const chatSend=document.getElementById('ai-send');
+  const chatInput = document.getElementById('ai-search');
+  const chatSend = document.getElementById('ai-send');
 
-  chatSend?.addEventListener('click',async ()=>{
-    const q=chatInput.value.trim();
-    if(!q) return addChatBubble("Please type a question!","ai");
-    await addChatBubble(q,"user");
-    chatInput.value='';
-    const reply=await aiReply(q);
-    await addChatBubble(reply,"ai");
+  chatSend?.addEventListener('click', async () => {
+    const q = chatInput.value.trim();
+    if (!q) return addChatBubble("Please type a question!", "ai");
+    await addChatBubble(q, "user");
+    chatInput.value = '';
+    const reply = await aiReply(q);
+    await addChatBubble(reply, "ai");
   });
 
-  chatInput?.addEventListener('keydown', async e=>{
-    if(e.key==='Enter'){e.preventDefault(); chatSend.click();}
+  chatInput?.addEventListener('keydown', async e => {
+    if (e.key === 'Enter') { e.preventDefault(); chatSend.click(); }
   });
 
   /* ---------- Voice input ---------- */
-  const micBtn=document.getElementById('mic-btn');
-  if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
-    const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-    let sherwonActive=false;
+  const micBtn = document.getElementById('mic-btn');
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let sherwonActive = false;
 
-    const chatRecognition=new SpeechRecognition();
-    chatRecognition.continuous=false;
-    chatRecognition.lang='en-US';
-    chatRecognition.interimResults=false;
-    chatRecognition.onresult=async e=>{
-      const text=e.results[0][0].transcript;
-      await addChatBubble(text,"user");
-      const reply=await aiReply(text);
-      await addChatBubble(reply,"ai");
+    const chatRecognition = new SpeechRecognition();
+    chatRecognition.continuous = false;
+    chatRecognition.lang = 'en-US';
+    chatRecognition.interimResults = false;
+    chatRecognition.onresult = async e => {
+      const text = e.results[0][0].transcript;
+      await addChatBubble(text, "user");
+      const reply = await aiReply(text);
+      await addChatBubble(reply, "ai");
     };
 
-    const sherwonRecognition=new SpeechRecognition();
-    sherwonRecognition.continuous=false;
-    sherwonRecognition.lang='en-US';
-    sherwonRecognition.interimResults=false;
-    sherwonRecognition.onresult=async e=>{
-      const transcript=e.results[0][0].transcript.trim().toLowerCase();
-      if(!transcript.includes("sherwon")) return sherwonSpeak("Please start your command by saying Sherwon.");
-      const command=transcript.replace("sherwon","").trim();
+    const sherwonRecognition = new SpeechRecognition();
+    sherwonRecognition.continuous = false;
+    sherwonRecognition.lang = 'en-US';
+    sherwonRecognition.interimResults = false;
+    sherwonRecognition.onresult = async e => {
+      const transcript = e.results[0][0].transcript.trim().toLowerCase();
+      if (!transcript.includes("sherwon")) return sherwonSpeak("Please start your command by saying Sherwon.");
+      const command = transcript.replace("sherwon", "").trim();
     };
 
-    micBtn.addEventListener('click',()=>{
-      if(sherwonActive) sherwonRecognition.start();
+    micBtn.addEventListener('click', () => {
+      if (sherwonActive) sherwonRecognition.start();
       else chatRecognition.start();
     });
 

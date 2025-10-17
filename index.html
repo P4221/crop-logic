@@ -539,7 +539,9 @@
   </footer>
 
   <script>
-    // === Elements ===
+    
+    
+// === Elements ===
 const signinBtn = document.getElementById('signin-btn');
 const logoutBtn = document.getElementById('logout-btn');
 const signinModal = document.getElementById('signin-modal');
@@ -639,9 +641,8 @@ document.getElementById('auth-form').addEventListener('submit', async e => {
     return;
   }
 
-  const url = isLogin 
-    ? "http://localhost:5000/api/login"
-    : "http://localhost:5000/api/register";
+  // Use relative URL so it works on Render
+  const url = isLogin ? "/api/login" : "/api/register";
 
   console.log(`📤 Sending request to: ${url}`);
   console.log("🧾 Payload:", { name, email, password });
@@ -695,6 +696,8 @@ logoutBtn.addEventListener('click', () => {
   logoutBtn.style.display = 'none';
   alert("You have been logged out.");
 });
+
+
 
     // ===== Sherwon AI Assistant =====
     const aiAvatar = document.getElementById('ai-avatar');
