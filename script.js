@@ -367,83 +367,104 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ---------- Weather (with realistic cool & windy fallback) ---------- */
-  const weatherBtn = document.getElementById('get-weather');
-  const weatherInput = document.getElementById('weather-city');
-  const weatherResult = document.getElementById('weather-result');
-  let userNameGlobal = window.userName || "Farmer";
+const weatherBtn = document.getElementById('get-weather');
+const weatherInput = document.getElementById('weather-city');
+const weatherResult = document.getElementById('weather-result');
+let userNameGlobal = window.userName || "Farmer";
 
-  function getGardenAdvice(weatherDesc) {
-    weatherDesc = weatherDesc.toLowerCase();
-    if (weatherDesc.includes("rain")) return "Looks like rain today! No need to water your plants, enjoy the shower!";
-    if (weatherDesc.includes("cloud")) return "A bit cloudy today — a good time to check if your plants need light watering.";
-    if (weatherDesc.includes("wind")) return "It's windy! Keep your lighter pots or seedlings sheltered.";
-    if (weatherDesc.includes("sun") || weatherDesc.includes("clear")) return "It's sunny! Time to water your spinach and dance with the sun!";
-    if (weatherDesc.includes("storm") || weatherDesc.includes("thunder")) return "Stormy day! Stay safe and let nature water your plants.";
-    return "Check your garden, " + userNameGlobal + "! The weather is a bit unpredictable today, so use your instincts!";
+// --- List of South African cities, towns, suburbs (example, expand as needed)
+const saLocations = [
+  "Johannesburg", "Cape Town", "Durban", "Pretoria", "Port Elizabeth",
+  "Bloemfontein", "East London", "Pietermaritzburg", "Polokwane",
+  "Nelspruit", "Welkom", "Soweto", "Randburg", "Umhlanga", "Sea Point"
+];
+
+// --- Helper to check if city is in SA
+function isValidSALocation(city) {
+  return saLocations.some(loc => loc.toLowerCase() === city.toLowerCase());
+}
+
+function getGardenAdvice(weatherDesc) {
+  weatherDesc = weatherDesc.toLowerCase();
+  if (weatherDesc.includes("rain")) return "Looks like rain today! No need to water your plants, enjoy the shower!";
+  if (weatherDesc.includes("cloud")) return "A bit cloudy today — a good time to check if your plants need light watering.";
+  if (weatherDesc.includes("wind")) return "It's windy! Keep your lighter pots or seedlings sheltered.";
+  if (weatherDesc.includes("sun") || weatherDesc.includes("clear")) return "It's sunny! Time to water your spinach and dance with the sun!";
+  if (weatherDesc.includes("storm") || weatherDesc.includes("thunder")) return "Stormy day! Stay safe and let nature water your plants.";
+  return "Check your garden, " + userNameGlobal + "! The weather is a bit unpredictable today, so use your instincts!";
+}
+
+// --- Main showWeather function
+async function showWeather(city) {
+  try {
+    const resp = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
+    let data = null;
+    if (resp.ok) data = await resp.json();
+
+    let temp, desc, humidity, wind, resolvedCity;
+
+    if (data && data.main) {
+      // Real API response
+      temp = data.main.temp;
+      desc = data.weather?.[0]?.description ?? "N/A";
+      humidity = data.main.humidity;
+      wind = data.wind?.speed;
+      resolvedCity = data.name ?? city;
+    } else {
+      // Fallback — mild, breezy day
+      temp = (20 + Math.random() * 2).toFixed(1);
+      desc = "partly cloudy with a gentle breeze";
+      humidity = Math.floor(55 + Math.random() * 10);
+      wind = (2 + Math.random() * 2).toFixed(1);
+      resolvedCity = city;
+    }
+
+    weatherResult.innerHTML = `
+      <p>Hello ${userNameGlobal}, the weather in ${resolvedCity} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, and wind speed ${wind} m/s.</p>
+      <p><em>${getGardenAdvice(desc)}</em></p>
+    `;
+
+    sherwonSpeak(
+      `Hello ${userNameGlobal}, the weather in ${resolvedCity} today is ${desc}, with a temperature of ${temp} degrees Celsius, humidity around ${humidity} percent, and gentle winds at ${wind} meters per second. ${getGardenAdvice(desc)}`,
+      "male"
+    );
+
+  } catch (err) {
+    // Backup fallback if fetch fails completely
+    const temp = (20 + Math.random() * 2).toFixed(1);
+    const desc = "partly cloudy with light wind";
+    const humidity = Math.floor(55 + Math.random() * 10);
+    const wind = (2 + Math.random() * 2).toFixed(1);
+    weatherResult.innerHTML = `
+      <p>Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, and wind speed ${wind} m/s.</p>
+      <p><em>${getGardenAdvice(desc)}</em></p>
+    `;
+    sherwonSpeak(
+      `Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, with a temperature of ${temp} degrees Celsius, humidity around ${humidity} percent, and light wind at ${wind} meters per second. ${getGardenAdvice(desc)}`,
+      "male"
+    );
+  }
+}
+
+// --- Button click logic
+weatherBtn?.addEventListener('click', async () => {
+  const city = weatherInput.value.trim();
+  if (!city) {
+    sherwonSpeak("Please type your town.", "male");
+    weatherResult.textContent = "Please enter a city or suburb.";
+    return;
   }
 
-  // --- Main showWeather function
-  async function showWeather(city) {
-    try {
-      const resp = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
-      let data = null;
-      if (resp.ok) data = await resp.json();
-
-      let temp, desc, humidity, wind, resolvedCity;
-
-      if (data && data.main) {
-        // Real API response
-        temp = data.main.temp;
-        desc = data.weather?.[0]?.description ?? "N/A";
-        humidity = data.main.humidity;
-        wind = data.wind?.speed;
-        resolvedCity = data.name ?? city;
-      } else {
-        // Fallback — mild, breezy day
-        temp = (20 + Math.random() * 2).toFixed(1);
-        desc = "partly cloudy with a gentle breeze";
-        humidity = Math.floor(55 + Math.random() * 10);
-        wind = (2 + Math.random() * 2).toFixed(1);
-        resolvedCity = city;
-      }
-
-      weatherResult.innerHTML = `
-        <p>Hello ${userNameGlobal}, the weather in ${resolvedCity} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, and wind speed ${wind} m/s.</p>
-        <p><em>${getGardenAdvice(desc)}</em></p>
-      `;
-
-      sherwonSpeak(
-        `Hello ${userNameGlobal}, the weather in ${resolvedCity} today is ${desc}, with a temperature of ${temp} degrees Celsius, humidity around ${humidity} percent, and gentle winds at ${wind} meters per second. ${getGardenAdvice(desc)}`,
-        "male"
-      );
-
-    } catch (err) {
-      // Backup fallback if fetch fails completely
-      const temp = (20 + Math.random() * 2).toFixed(1);
-      const desc = "partly cloudy with light wind";
-      const humidity = Math.floor(55 + Math.random() * 10);
-      const wind = (2 + Math.random() * 2).toFixed(1);
-      weatherResult.innerHTML = `
-        <p>Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, temperature ${temp}°C, humidity ${humidity}%, and wind speed ${wind} m/s.</p>
-        <p><em>${getGardenAdvice(desc)}</em></p>
-      `;
-      sherwonSpeak(
-        `Hello ${userNameGlobal}, the weather in ${city} today is ${desc}, with a temperature of ${temp} degrees Celsius, humidity around ${humidity} percent, and light wind at ${wind} meters per second. ${getGardenAdvice(desc)}`,
-        "male"
-      );
-    }
+  // --- Validate SA city/town/suburb
+  if (!isValidSALocation(city)) {
+    sherwonSpeak("Sorry, please enter a valid South African city, town, or suburb.", "male");
+    weatherResult.textContent = "Invalid location! Please enter a valid South African city, town, or suburb.";
+    return;
   }
 
-  // --- Button click logic
-  weatherBtn?.addEventListener('click', async () => {
-    const city = weatherInput.value.trim();
-    if (!city) {
-      sherwonSpeak("Please type your town.", "male");
-      weatherResult.textContent = "Please enter a city or suburb.";
-      return;
-    }
-    await showWeather(city);
-  });
+  await showWeather(city);
+});
+
 
   /* ---------- Chatbot + AI ---------- */
   async function fetchGoogleResults(query) {
