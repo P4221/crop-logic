@@ -1,5 +1,7 @@
 # Crop Logic
 
+<img width="1254" height="1254" alt="image" src="https://github.com/user-attachments/assets/6554bec5-045e-4df0-8189-669968c27236" />
+
 ## Smart Farming Assistant
 
 Crop Logic is a web-based Smart Farming Assistant designed to
